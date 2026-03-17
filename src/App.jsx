@@ -112,7 +112,7 @@ function LandingPage({ onStart }) {
           AI-Powered Talent Intelligence
         </div>
         <h1 style={{ fontSize: "clamp(2.8rem, 7vw, 5rem)", fontWeight: "900", lineHeight: 1.05, margin: "0 0 1.5rem", maxWidth: "800px", background: "linear-gradient(135deg, #fff 0%, #c4b5fd 50%, #00C9A7 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-          We Don't Just Want Your CV. We Want to Know You.
+          Beyond the CV. We Want to Know the Real You.
         </h1>
         <p style={{ fontSize: "clamp(16px, 2vw, 20px)", color: "#888", lineHeight: 1.7, maxWidth: "580px", margin: "0 auto 1rem" }}>This isn't a typical application. We use AI to understand who you are, how you think, and where you'll genuinely thrive — not just what's on paper.</p>
         <p style={{ fontSize: "15px", color: "#555", marginBottom: "3rem" }}>Takes about 10 minutes. No wrong answers.</p>
