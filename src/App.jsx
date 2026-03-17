@@ -658,7 +658,8 @@ function HRDashboard({ token }) {
 
               {/* Strength Pie */}
               <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px", padding: "1.5rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.2rem", alignSelf: "flex-start" }}>Strength Mix</div>
+                <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "4px", alignSelf: "flex-start" }}>Strength Mix</div>
+<div style={{ fontSize: "11px", color: "#444", marginBottom: "1rem", alignSelf: "flex-start" }}>Clifton domain breakdown</div>
                 <PieChart data={strengthPieData} size={120} />
                 <div style={{ marginTop: "0.8rem", display: "flex", flexWrap: "wrap", gap: "4px", justifyContent: "center" }}>
                   {strengthPieData.filter(d => d.value > 0).map(d => (
@@ -672,7 +673,8 @@ function HRDashboard({ token }) {
 
               {/* Role Pie */}
               <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px", padding: "1.5rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.2rem", alignSelf: "flex-start" }}>Role Mix</div>
+                <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "4px", alignSelf: "flex-start" }}>Role Mix</div>
+<div style={{ fontSize: "11px", color: "#444", marginBottom: "1rem", alignSelf: "flex-start" }}>Best fit roles across candidates</div>
                 <PieChart data={rolePieData.length ? rolePieData : [{ label: "None", value: 1, color: "rgba(255,255,255,0.05)" }]} size={120} />
                 <div style={{ marginTop: "0.8rem", display: "flex", flexWrap: "wrap", gap: "4px", justifyContent: "center" }}>
                   {rolePieData.filter(d => d.value > 0).map(d => (
