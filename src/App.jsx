@@ -82,15 +82,11 @@ function Avatar({ name, size = 40 }) {
 function EmailLink({ email, style = {} }) {
   if (!email) return <span style={{ color: "#555", fontSize: "13px" }}>No email</span>;
   return (
-    
-      href={gmailLink(email)}
-      target="_blank"
-      rel="noopener noreferrer"
+    <a href={gmailLink(email)} target="_blank" rel="noopener noreferrer"
       onClick={e => e.stopPropagation()}
       style={{ color: "#a78bfa", fontSize: "13px", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px", ...style }}
       onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
-      onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
-    >
+      onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}>
       ✉️ {email}
     </a>
   );
@@ -589,7 +585,6 @@ function HRDashboard({ token }) {
               </div>
             </div>
           </div>
-
           <div style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem", flexWrap: "wrap", alignItems: "center" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", background: `${recColor}18`, border: `1px solid ${recColor}44`, borderRadius: "999px" }}>
               <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: recColor }} />
@@ -603,7 +598,6 @@ function HRDashboard({ token }) {
               <span style={{ padding: "10px 20px", background: "rgba(0,201,167,0.1)", border: "1px solid rgba(0,201,167,0.3)", borderRadius: "999px", color: "#00C9A7", fontSize: "14px" }}>✓ Hired</span>
             )}
           </div>
-
           <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem", marginBottom: "1rem" }}>
             <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>Assessment Breakdown</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
@@ -624,7 +618,6 @@ function HRDashboard({ token }) {
               <span style={{ fontSize: "2rem", fontWeight: "900", color: "#fff" }}>{selected.confidence}%</span>
             </div>
           </div>
-
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
             <div style={{ background: "rgba(0,201,167,0.05)", border: "1px solid rgba(0,201,167,0.15)", borderRadius: "16px", padding: "1.5rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#00C9A7", textTransform: "uppercase", marginBottom: "1rem" }}>✨ Green Flags</div>
@@ -641,21 +634,18 @@ function HRDashboard({ token }) {
               </div>
             </div>
           </div>
-
           {weaknesses.length > 0 && (
             <div style={{ background: "rgba(255,107,107,0.05)", border: "1px solid rgba(255,107,107,0.2)", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#ff6b6b", textTransform: "uppercase", marginBottom: "1rem" }}>⚠️ Weakness Analysis</div>
               {weaknesses.map((w, i) => <div key={i} style={{ fontSize: "13px", color: "#ccc", lineHeight: 1.6, marginBottom: "0.6rem", paddingLeft: "0.8rem", borderLeft: "2px solid #ff6b6b" }}>{w}</div>)}
             </div>
           )}
-
           {watchpoints.length > 0 && (
             <div style={{ background: "rgba(255,165,0,0.04)", border: "1px solid rgba(255,165,0,0.2)", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#ffa500", textTransform: "uppercase", marginBottom: "1rem" }}>👁️ Watchpoints</div>
               {watchpoints.map((w, i) => <div key={i} style={{ fontSize: "13px", color: "#ccc", lineHeight: 1.6, marginBottom: "0.6rem", paddingLeft: "0.8rem", borderLeft: "2px solid #ffa500" }}>{w}</div>)}
             </div>
           )}
-
           {interviewQs.length > 0 && (
             <div style={{ background: "rgba(123,97,255,0.05)", border: "1px solid rgba(123,97,255,0.2)", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#a78bfa", textTransform: "uppercase", marginBottom: "1rem" }}>🎯 Interview Questions</div>
@@ -666,7 +656,6 @@ function HRDashboard({ token }) {
               ))}
             </div>
           )}
-
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
             <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.5rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "0.8rem" }}>Best Fit Role</div>
@@ -678,12 +667,10 @@ function HRDashboard({ token }) {
               <div style={{ fontSize: "13px", color: "#ccc", lineHeight: 1.6 }}>{selected.environment}</div>
             </div>
           </div>
-
           <div style={{ background: "rgba(232,255,90,0.04)", border: "1px solid rgba(232,255,90,0.15)", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem" }}>
             <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#E8FF5A", textTransform: "uppercase", marginBottom: "0.8rem" }}>🔒 Hiring Manager Note</div>
             <div style={{ fontSize: "14px", color: "#ccc", lineHeight: 1.7 }}>{selected.hiring_note}</div>
           </div>
-
           <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
             <div>
               <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "0.6rem" }}>Contact</div>
@@ -696,7 +683,6 @@ function HRDashboard({ token }) {
               <button onClick={() => deleteCandidate(selected.id)} style={{ padding: "10px 20px", background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.2)", borderRadius: "10px", color: "#ff6b6b", cursor: "pointer", fontFamily: "inherit", fontSize: "14px" }}>🗑️ Delete</button>
             </div>
           </div>
-
           <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.5rem" }}>
             <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.2rem" }}>All Responses</div>
             {selected.answers && Object.entries(selected.answers).filter(([k]) => !["weaknessAnalysis", "watchpoints", "interviewFollowUps", "personaSnapshot"].includes(k)).map(([key, val]) => (
