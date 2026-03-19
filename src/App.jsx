@@ -26,8 +26,8 @@ const QUESTIONS = [
   { id: "name", label: "Let's start with your name.", sublabel: "What should we call you?", type: "text", placeholder: "Your full name", section: "About You" },
   { id: "email", label: "What's your email address?", sublabel: "We'll use this to get back to you.", type: "email", placeholder: "you@example.com", section: "About You" },
   { id: "role_applying", label: "What role are you applying for?", sublabel: "Type the position you're interested in.", type: "text", placeholder: "e.g. Software Engineer, Marketing Lead...", section: "About You" },
-  { id: "academic", label: "Tell us about your academic background.", sublabel: "Degrees, fields of study, institutions.", type: "choice", options: ["High School / Secondary", "Diploma / Certificate", "Bachelor's Degree", "Master's Degree", "PhD / Doctorate", "Self-taught / Bootcamp"], section: "Your Story" },
-  { id: "experience", label: "How many years of work experience do you have?", sublabel: "Include internships and part-time work.", type: "choice", options: ["Less than 1 year", "1–2 years", "3–5 years", "6–10 years", "10+ years"], section: "Your Story" },
+  { id: "academic", label: "Tell us about your academic background.", sublabel: "Degrees, fields of study, institutions — whatever shaped your thinking.", type: "textarea", placeholder: "e.g. BSc Computer Science, University of Nairobi...", section: "Your Story" },
+  { id: "experience", label: "Walk us through your work experience.", sublabel: "Roles, industries, and what you actually did.", type: "textarea", placeholder: "e.g. 3 years as a software developer at a fintech startup...", section: "Your Story" },
   { id: "skills", label: "Which best describes your skill set?", sublabel: "Pick the one that fits most.", type: "choice", options: ["Technical / Engineering", "Creative / Design", "Data / Analytics", "People / HR", "Sales / Business", "Strategy / Management"], section: "Your Story" },
   { id: "proud", label: "What achievement are you most proud of?", sublabel: "Professional or personal — tell us about a moment that defined you.", type: "textarea", placeholder: "e.g. I led a team that reduced customer churn by 40%...", section: "Your Story" },
   { id: "tradeoff", label: "Tell us about a time you had to choose between doing something right and doing it fast.", sublabel: "What did you decide and what did it cost you?", type: "textarea", placeholder: "e.g. During a product launch, I had to choose between shipping with known bugs or delaying...", section: "How You Think" },
@@ -125,7 +125,7 @@ function LandingPage({ onStart }) {
             { icon: "⚡", title: "Behavioral Intelligence", desc: "Detects ownership mindset, team orientation, and patterns CVs never reveal." },
             { icon: "🎯", title: "Role Match Engine", desc: "Matches candidates to the exact role where they'll do their best work." },
             { icon: "🛡️", title: "Bias-Controlled Analysis", desc: "AI focuses purely on content — ignoring grammar, style, and cultural differences." },
-            { icon: "🔐", title: "Private HR Dashboard", desc: "Full candidate profiles, analytics, and insights visible only to your HR team." },
+            
           ].map(f => (
             <div key={f.title} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "2rem", transition: "all 0.2s" }}
               onMouseEnter={e => { e.currentTarget.style.background = "rgba(123,97,255,0.08)"; e.currentTarget.style.borderColor = "rgba(123,97,255,0.3)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
