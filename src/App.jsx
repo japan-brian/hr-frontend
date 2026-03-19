@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 
 const BACKEND_URL = "https://hr-backend-jcsb.onrender.com";
+const HR_EMAIL = "briankikuyu0@gmail.com";
+
+const gmailLink = (to) =>
+  `https://mail.google.com/mail/?view=cm&fs=1&from=${HR_EMAIL}&to=${to}`;
 
 const ROLES = [
   { id: "ops", title: "Operations Lead", emoji: "⚙️", desc: "Turns chaos into systems. Owns execution and keeps organizations running smoothly." },
@@ -72,6 +76,23 @@ function Avatar({ name, size = 40 }) {
     <div style={{ width: size, height: size, borderRadius: "50%", background: `${color}30`, border: `2px solid ${color}60`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.35, fontWeight: "800", color, flexShrink: 0 }}>
       {initials}
     </div>
+  );
+}
+
+function EmailLink({ email, style = {} }) {
+  if (!email) return <span style={{ color: "#555", fontSize: "13px" }}>No email</span>;
+  return (
+    
+      href={gmailLink(email)}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={e => e.stopPropagation()}
+      style={{ color: "#a78bfa", fontSize: "13px", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px", ...style }}
+      onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
+      onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
+    >
+      ✉️ {email}
+    </a>
   );
 }
 
@@ -185,7 +206,7 @@ function LandingPage({ onStart }) {
             </div>
             <div>
               <div style={{ fontSize: "12px", letterSpacing: "2px", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>Contact</div>
-              <a href="mailto:info@honeypotadvisory.com" style={{ color: "#666", fontSize: "14px", textDecoration: "none" }}>info@honeypotadvisory.com</a>
+              <a href={gmailLink("info@honeypotadvisory.com")} target="_blank" rel="noopener noreferrer" style={{ color: "#666", fontSize: "14px", textDecoration: "none" }}>info@honeypotadvisory.com</a>
               <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "0.8rem" }}>
                 <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#00C9A7" }} />
                 <span style={{ color: "#00C9A7", fontSize: "13px" }}>All systems operational</span>
@@ -319,7 +340,7 @@ function ThankYouScreen({ name }) {
         <div style={{ padding: "1.5rem 2rem", background: "rgba(123,97,255,0.08)", border: "1px solid rgba(123,97,255,0.2)", borderRadius: "16px" }}>
           <p style={{ color: "#a78bfa", margin: 0, fontSize: "15px", lineHeight: 1.6 }}>✨ We loved getting to know you. Every answer you gave helps us find the right fit.</p>
         </div>
-        <p style={{ color: "#444", fontSize: "13px", marginTop: "2rem" }}>© 2026 HoneypotAdvisory · <a href="mailto:info@honeypotadvisory.com" style={{ color: "#666", textDecoration: "none" }}>info@honeypotadvisory.com</a></p>
+        <p style={{ color: "#444", fontSize: "13px", marginTop: "2rem" }}>© 2026 HoneypotAdvisory</p>
       </div>
     </div>
   );
@@ -461,7 +482,7 @@ function HRDashboard({ token }) {
       setShowAddTask(false);
       showToast("📋 Task created!");
     } else {
-      showToast("❌ Failed to create task. Check Render logs.");
+      showToast("❌ Failed to create task.");
     }
   };
 
@@ -665,12 +686,8 @@ function HRDashboard({ token }) {
 
           <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
             <div>
-              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "0.4rem" }}>Contact</div>
-              <a href={`mailto:${selected.email}`} style={{ color: "#a78bfa", fontSize: "14px", textDecoration: "none" }}
-                onMouseEnter={e => e.target.style.textDecoration = "underline"}
-                onMouseLeave={e => e.target.style.textDecoration = "none"}>
-                {selected.email || "No email"}
-              </a>
+              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "0.6rem" }}>Contact</div>
+              <EmailLink email={selected.email} style={{ fontSize: "14px" }} />
             </div>
             <div style={{ display: "flex", gap: "0.8rem" }}>
               <button onClick={() => toggleShortlist(selected.id, selected.shortlisted)} style={{ padding: "10px 20px", background: selected.shortlisted ? "rgba(232,255,90,0.15)" : cardBg, border: `1px solid ${selected.shortlisted ? "rgba(232,255,90,0.4)" : cardBorder}`, borderRadius: "10px", color: selected.shortlisted ? "#E8FF5A" : "#888", cursor: "pointer", fontFamily: "inherit", fontSize: "14px" }}>
@@ -804,12 +821,8 @@ function HRDashboard({ token }) {
                     <Avatar name={c.name} size={40} />
                     <div>
                       <div style={{ fontSize: "15px", fontWeight: "700", marginBottom: "2px" }}>{c.name}</div>
-                      <div style={{ fontSize: "12px", color: "#555", marginBottom: "2px" }}>{c.clifton_theme || c.primary_strength}</div>
-                      <a href={`mailto:${c.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: "12px", color: "#a78bfa", textDecoration: "none" }}
-                        onMouseEnter={e => e.target.style.textDecoration = "underline"}
-                        onMouseLeave={e => e.target.style.textDecoration = "none"}>
-                        {c.email}
-                      </a>
+                      <div style={{ fontSize: "12px", color: "#555", marginBottom: "3px" }}>{c.clifton_theme || c.primary_strength}</div>
+                      <EmailLink email={c.email} />
                     </div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
@@ -828,12 +841,9 @@ function HRDashboard({ token }) {
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
               <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: 0 }}>Employees</h1>
-              <button onClick={() => setShowAddEmployee(!showAddEmployee)} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "10px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>
-                + Add Employee
-              </button>
+              <button onClick={() => setShowAddEmployee(!showAddEmployee)} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "10px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>+ Add Employee</button>
             </div>
             <p style={{ color: "#555", margin: "0 0 2rem", fontSize: "14px" }}>{employees.length} active employees</p>
-
             {showAddEmployee && (
               <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem", marginBottom: "2rem" }}>
                 <div style={{ fontSize: "13px", fontWeight: "700", color: "#888", marginBottom: "1.5rem" }}>New Employee</div>
@@ -851,7 +861,6 @@ function HRDashboard({ token }) {
                 </div>
               </div>
             )}
-
             {employees.length === 0 ? (
               <div style={{ textAlign: "center", padding: "4rem", color: "#444" }}>
                 <div style={{ fontSize: "48px", marginBottom: "1rem" }}>🧑‍💼</div>
@@ -865,12 +874,8 @@ function HRDashboard({ token }) {
                   <div>
                     <div style={{ fontSize: "16px", fontWeight: "700", marginBottom: "2px" }}>{e.name}</div>
                     <div style={{ fontSize: "13px", color: "#555", marginBottom: "4px" }}>{e.role} · {e.department}</div>
-                    <a href={`mailto:${e.email}`} style={{ fontSize: "12px", color: "#a78bfa", textDecoration: "none", display: "block", marginBottom: "6px" }}
-                      onMouseEnter={ev => ev.target.style.textDecoration = "underline"}
-                      onMouseLeave={ev => ev.target.style.textDecoration = "none"}>
-                      {e.email}
-                    </a>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                    <EmailLink email={e.email} style={{ marginBottom: "6px" }} />
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "6px" }}>
                       {(Array.isArray(e.skills) ? e.skills : []).slice(0, 4).map(skill => (
                         <span key={skill} style={{ padding: "2px 8px", background: "rgba(123,97,255,0.12)", border: "1px solid rgba(123,97,255,0.25)", borderRadius: "999px", fontSize: "11px", color: "#a78bfa" }}>{skill}</span>
                       ))}
@@ -893,12 +898,9 @@ function HRDashboard({ token }) {
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
               <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: 0 }}>AI Task Assignment</h1>
-              <button onClick={() => setShowAddTask(!showAddTask)} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "10px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>
-                + New Task
-              </button>
+              <button onClick={() => setShowAddTask(!showAddTask)} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "10px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>+ New Task</button>
             </div>
             <p style={{ color: "#555", margin: "0 0 2rem", fontSize: "14px" }}>{tasks.filter(t => t.status === "Unassigned").length} unassigned · {tasks.filter(t => t.status === "Assigned").length} assigned</p>
-
             {showAddTask && (
               <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem", marginBottom: "2rem" }}>
                 <div style={{ fontSize: "13px", fontWeight: "700", color: "#888", marginBottom: "1.5rem" }}>Create New Task</div>
@@ -914,7 +916,6 @@ function HRDashboard({ token }) {
                 </div>
               </div>
             )}
-
             {tasks.length === 0 ? (
               <div style={{ textAlign: "center", padding: "4rem", color: "#444" }}>
                 <div style={{ fontSize: "48px", marginBottom: "1rem" }}>📋</div>
@@ -923,7 +924,7 @@ function HRDashboard({ token }) {
               </div>
             ) : tasks.map(t => (
               <div key={t.id} style={{ background: cardBg, border: `1px solid ${t.status === "Assigned" ? "rgba(0,201,167,0.25)" : cardBorder}`, borderRadius: "16px", padding: "1.5rem", marginBottom: "0.8rem" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", marginBottom: "0.8rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem" }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", marginBottom: "0.4rem" }}>
                       <div style={{ fontSize: "16px", fontWeight: "700" }}>{t.title}</div>
@@ -973,12 +974,8 @@ function HRDashboard({ token }) {
                   <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <Avatar name={c.name} size={40} />
                     <div>
-                      <div style={{ fontSize: "15px", fontWeight: "700" }}>{c.name}</div>
-                      <a href={`mailto:${c.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: "12px", color: "#a78bfa", textDecoration: "none" }}
-                        onMouseEnter={e => e.target.style.textDecoration = "underline"}
-                        onMouseLeave={e => e.target.style.textDecoration = "none"}>
-                        {c.email}
-                      </a>
+                      <div style={{ fontSize: "15px", fontWeight: "700", marginBottom: "3px" }}>{c.name}</div>
+                      <EmailLink email={c.email} />
                     </div>
                   </div>
                   <div style={{ fontSize: "18px", fontWeight: "800", color: colors.bg }}>{c.confidence}%</div>
@@ -995,7 +992,7 @@ function HRDashboard({ token }) {
             <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem", marginBottom: "1rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>About</div>
               <p style={{ color: "#888", fontSize: "14px", lineHeight: 1.7, margin: "0 0 1rem" }}>HoneypotAdvisory is an AI-powered talent intelligence platform using Clifton StrengthsFinder methodology, rubric-based behavioral analysis, and autonomous AI task assignment.</p>
-              <a href="mailto:info@honeypotadvisory.com" style={{ color: "#a78bfa", fontSize: "13px", textDecoration: "none" }}>info@honeypotadvisory.com</a>
+              <EmailLink email="info@honeypotadvisory.com" style={{ fontSize: "13px" }} />
             </div>
             <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>System Status</div>
