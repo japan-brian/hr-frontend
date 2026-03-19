@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 const BACKEND_URL = "https://hr-backend-jcsb.onrender.com";
 
@@ -25,44 +25,30 @@ const STRENGTH_COLORS = {
 const QUESTIONS = [
   { id: "name", label: "Let's start with your name.", sublabel: "What should we call you?", type: "text", placeholder: "Your full name", section: "About You" },
   { id: "email", label: "What's your email address?", sublabel: "We'll use this to get back to you.", type: "email", placeholder: "you@example.com", section: "About You" },
-  { id: "role_applying", label: "What role are you applying for?", sublabel: "Type the position you're interested in.", type: "text", placeholder: "e.g. Software Engineer, Security Guard, Marketing Lead...", section: "About You" },
-  { id: "academic", label: "Tell us about your academic background.", sublabel: "Degrees, fields of study, institutions — whatever shaped your thinking.", type: "textarea", placeholder: "e.g. BSc Computer Science, University of Nairobi. I also completed a data science bootcamp in 2022...", section: "Your Story" },
-  { id: "experience", label: "Walk us through your work experience.", sublabel: "Roles, industries, and what you actually did — not just job titles.", type: "textarea", placeholder: "e.g. 3 years as a software developer at a fintech startup, then moved into product management...", section: "Your Story" },
-  { id: "skills", label: "What are your strongest skills?", sublabel: "Technical tools, soft skills, methodologies — anything you're genuinely good at.", type: "textarea", placeholder: "e.g. Python, stakeholder management, systems thinking, public speaking...", section: "Your Story" },
-  { id: "proud", label: "What achievement are you most proud of?", sublabel: "Professional or personal — tell us about a moment that defined you.", type: "textarea", placeholder: "e.g. I led a team that reduced customer churn by 40% in 6 months. What made it special was...", section: "Your Story" },
-  { id: "hobbies", label: "What do you do when you're not working?", sublabel: "Hobbies, passions, side projects — what lights you up outside of work?", type: "textarea", placeholder: "e.g. I coach youth football on weekends, I'm learning Arabic, and I build mechanical keyboards...", section: "Your Story" },
-  { id: "tradeoff", label: "Tell us about a time you had to choose between doing something right and doing it fast.", sublabel: "What did you decide, and what did it cost you?", type: "textarea", placeholder: "e.g. During a product launch, I had to choose between shipping with known bugs or delaying by two weeks...", section: "How You Think" },
-  { id: "learning", label: "What's the most complex thing you've taught yourself in the last year?", sublabel: "Walk us through exactly how you approached learning it.", type: "textarea", placeholder: "e.g. I taught myself machine learning from scratch using fast.ai. I started by...", section: "How You Think" },
-  { id: "influence", label: "Describe a time you changed someone's mind at work.", sublabel: "What approach did you take and why did it work?", type: "textarea", placeholder: "e.g. My manager was convinced we needed to rebuild the whole system. I showed them data that...", section: "How You Think" },
-  { id: "stress", label: "When things get overwhelming, what do you do?", sublabel: "There's no right answer — describe exactly how you actually handle pressure.", type: "textarea", placeholder: "e.g. I tend to go quiet first. I make a list, then I identify the one thing that unblocks everything else...", section: "How You Work" },
-  { id: "conflict", label: "How do you respond when you disagree with a decision made above you?", sublabel: "Be honest — what do you actually do?", type: "choice", options: ["I voice my concern clearly and explain my reasoning", "I ask questions to understand their reasoning first", "I go along with it but note my disagreement", "I find a way to influence the outcome indirectly", "It depends — I read the situation carefully"], section: "How You Work" },
-  { id: "motivation", label: "What kind of work makes you completely lose track of time?", sublabel: "Think about the last time you were truly in flow.", type: "textarea", placeholder: "e.g. I lose track of time when I'm deep in a complex data problem, especially when I can see a pattern forming...", section: "How You Work" },
-  { id: "failure", label: "Tell us about a time you failed. What did you do next?", sublabel: "We're more interested in the 'what next' than the failure itself.", type: "textarea", placeholder: "e.g. I missed a major product deadline because I underestimated dependencies. I called the stakeholders immediately...", section: "How You Work" },
-  { id: "decision", label: "How do you make a difficult decision with incomplete information?", sublabel: "Walk us through your actual thinking process.", type: "choice", options: ["I gather as much data as I can before deciding", "I trust my gut and move fast", "I consult the people most affected by the outcome", "I identify the worst-case scenario and work backwards", "I make a reversible decision and adjust as I go"], section: "How You Work" },
-  { id: "feedback", label: "How do you respond to critical feedback?", sublabel: "Give us a real example if you can.", type: "textarea", placeholder: "e.g. My manager once told me I was too direct in client meetings. Initially I was defensive, but then I...", section: "How You Work" },
-  { id: "energy", label: "Where do you get your energy from?", sublabel: "What fills your tank versus drains it?", type: "choice", options: ["Deep focus and solo work", "Collaboration and conversation with others", "A mix of both depending on the day", "From the challenge and problem itself"], section: "Who You Are" },
-  { id: "superpower", label: "If your closest friend described your greatest professional strength, what would they say?", sublabel: "Think about what people always come to you for.", type: "textarea", placeholder: "e.g. They'd say I'm the person who always finds a way. No matter how stuck the situation is, I figure it out...", section: "Who You Are" },
-  { id: "values", label: "What do you value most in a workplace?", sublabel: "Pick everything that genuinely matters to you.", type: "multichoice", options: ["Autonomy & ownership", "Clear structure & guidance", "Strong team culture", "Fast growth & challenge", "Purpose & impact", "Recognition & visibility"], section: "Who You Are" },
-  { id: "environment", label: "What kind of environment brings out your best work?", sublabel: "Be honest about what you actually need to thrive.", type: "choice", options: ["High-autonomy, figure-it-out culture", "Structured with clear expectations", "Collaborative and team-driven", "Fast-paced and constantly shifting"], section: "Your Ideal Fit" },
-  { id: "manager", label: "What does your ideal manager look like?", sublabel: "The kind of leadership that actually helps you grow.", type: "choice", options: ["A coach who develops me personally", "Someone who sets goals and steps back", "A peer who collaborates with me", "A visionary I can learn from and follow"], section: "Your Ideal Fit" },
-  { id: "about", label: "Is there anything else about you that matters?", sublabel: "Anything we haven't asked that you'd want us to know — don't hold back.", type: "textarea", placeholder: "e.g. I'm fluent in 3 languages, I've lived in 4 countries, and I work best when given a big problem and space...", section: "Your Ideal Fit" },
+  { id: "role_applying", label: "What role are you applying for?", sublabel: "Type the position you're interested in.", type: "text", placeholder: "e.g. Software Engineer, Marketing Lead...", section: "About You" },
+  { id: "academic", label: "Tell us about your academic background.", sublabel: "Degrees, fields of study, institutions.", type: "choice", options: ["High School / Secondary", "Diploma / Certificate", "Bachelor's Degree", "Master's Degree", "PhD / Doctorate", "Self-taught / Bootcamp"], section: "Your Story" },
+  { id: "experience", label: "How many years of work experience do you have?", sublabel: "Include internships and part-time work.", type: "choice", options: ["Less than 1 year", "1–2 years", "3–5 years", "6–10 years", "10+ years"], section: "Your Story" },
+  { id: "skills", label: "Which best describes your skill set?", sublabel: "Pick the one that fits most.", type: "choice", options: ["Technical / Engineering", "Creative / Design", "Data / Analytics", "People / HR", "Sales / Business", "Strategy / Management"], section: "Your Story" },
+  { id: "proud", label: "What achievement are you most proud of?", sublabel: "Professional or personal — tell us about a moment that defined you.", type: "textarea", placeholder: "e.g. I led a team that reduced customer churn by 40%...", section: "Your Story" },
+  { id: "tradeoff", label: "Tell us about a time you had to choose between doing something right and doing it fast.", sublabel: "What did you decide and what did it cost you?", type: "textarea", placeholder: "e.g. During a product launch, I had to choose between shipping with known bugs or delaying...", section: "How You Think" },
+  { id: "learning", label: "What's the most complex thing you've taught yourself?", sublabel: "Walk us through how you approached learning it.", type: "textarea", placeholder: "e.g. I taught myself machine learning from scratch...", section: "How You Think" },
+  { id: "stress", label: "When things get overwhelming, what do you do?", sublabel: "How do you actually handle pressure?", type: "choice", options: ["Make a list and tackle one by one", "Step back and look at the big picture", "Talk it through with someone I trust", "Push through independently", "Take a break then come back fresh"], section: "How You Work" },
+  { id: "conflict", label: "How do you respond when you disagree with a decision above you?", sublabel: "Be honest — what do you actually do?", type: "choice", options: ["Voice my concern clearly", "Ask questions to understand first", "Go along but note my disagreement", "Find a way to influence indirectly", "Read the situation carefully"], section: "How You Work" },
+  { id: "decision", label: "How do you make difficult decisions with incomplete information?", sublabel: "What's your actual thinking process?", type: "choice", options: ["Gather as much data as possible", "Trust my gut and move fast", "Consult the people most affected", "Identify worst-case and work backwards", "Make a reversible decision and adjust"], section: "How You Work" },
+  { id: "energy", label: "Where do you get your energy from?", sublabel: "What fills your tank vs drains it?", type: "choice", options: ["Deep focus and solo work", "Collaboration and conversation", "A mix of both", "From the challenge itself"], section: "Who You Are" },
+  { id: "values", label: "What do you value most in a workplace?", sublabel: "Pick everything that genuinely matters.", type: "multichoice", options: ["Autonomy & ownership", "Clear structure & guidance", "Strong team culture", "Fast growth & challenge", "Purpose & impact", "Recognition & visibility"], section: "Who You Are" },
+  { id: "environment", label: "What kind of environment brings out your best work?", sublabel: "Be honest about what you need to thrive.", type: "choice", options: ["High-autonomy, figure-it-out culture", "Structured with clear expectations", "Collaborative and team-driven", "Fast-paced and constantly shifting"], section: "Your Ideal Fit" },
+  { id: "manager", label: "What does your ideal manager look like?", sublabel: "The kind of leadership that helps you grow.", type: "choice", options: ["A coach who develops me", "Someone who sets goals and steps back", "A peer who collaborates with me", "A visionary I can learn from"], section: "Your Ideal Fit" },
 ];
 
-function PieChart({ data, size = 160 }) {
+function PieChart({ data, size = 140 }) {
   const total = data.reduce((s, d) => s + d.value, 0);
   if (total === 0) return <div style={{ width: size, height: size, borderRadius: "50%", background: "rgba(255,255,255,0.05)", display: "flex", alignItems: "center", justifyContent: "center", color: "#444", fontSize: "12px" }}>No data</div>;
   let cumulative = 0;
-  const slices = data.map(d => {
-    const start = cumulative;
-    cumulative += d.value / total;
-    return { ...d, start, end: cumulative };
-  });
-  const getCoords = (pct) => {
-    const angle = pct * 2 * Math.PI - Math.PI / 2;
-    return [50 + 45 * Math.cos(angle), 50 + 45 * Math.sin(angle)];
-  };
+  const slices = data.map(d => { const start = cumulative; cumulative += d.value / total; return { ...d, start, end: cumulative }; });
+  const getCoords = (pct) => { const angle = pct * 2 * Math.PI - Math.PI / 2; return [50 + 45 * Math.cos(angle), 50 + 45 * Math.sin(angle)]; };
   return (
-    <svg viewBox="0 0 100 100" width={size} height={size} style={{ borderRadius: "50%" }}>
+    <svg viewBox="0 0 100 100" width={size} height={size}>
       {slices.map((s, i) => {
         if (s.value === 0) return null;
         const [x1, y1] = getCoords(s.start);
@@ -78,23 +64,20 @@ function PieChart({ data, size = 160 }) {
   );
 }
 
-function NavBar({ onStart }) {
+function NavBar({ onStart, darkMode }) {
   const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
+  useEffect(() => { const h = () => setScrolled(window.scrollY > 20); window.addEventListener("scroll", h); return () => window.removeEventListener("scroll", h); }, []);
+  const bg = darkMode ? "#070711" : "#ffffff";
   return (
-    <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "0 2rem", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between", background: scrolled ? "rgba(7,7,17,0.95)" : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none", transition: "all 0.3s ease" }}>
+    <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "0 2rem", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between", background: scrolled ? (darkMode ? "rgba(7,7,17,0.95)" : "rgba(255,255,255,0.95)") : "transparent", backdropFilter: scrolled ? "blur(20px)" : "none", borderBottom: scrolled ? `1px solid ${darkMode ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.08)"}` : "none", transition: "all 0.3s" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <span style={{ fontSize: "20px" }}>🍯</span>
         <span style={{ fontWeight: "800", fontSize: "16px", background: "linear-gradient(135deg, #E8FF5A, #00C9A7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>HoneypotAdvisory</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
-        <a href="#features" style={{ color: "#888", fontSize: "14px", textDecoration: "none" }} onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = "#888"}>Features</a>
-        <a href="#how" style={{ color: "#888", fontSize: "14px", textDecoration: "none" }} onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = "#888"}>How It Works</a>
-        <button onClick={onStart} style={{ padding: "8px 20px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "8px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s" }} onMouseEnter={e => { e.target.style.transform = "translateY(-1px)"; e.target.style.boxShadow = "0 4px 20px rgba(123,97,255,0.4)"; }} onMouseLeave={e => { e.target.style.transform = "translateY(0)"; e.target.style.boxShadow = "none"; }}>Apply Now</button>
+        <a href="#features" style={{ color: darkMode ? "#888" : "#666", fontSize: "14px", textDecoration: "none" }}>Features</a>
+        <a href="#how" style={{ color: darkMode ? "#888" : "#666", fontSize: "14px", textDecoration: "none" }}>How It Works</a>
+        <button onClick={onStart} style={{ padding: "8px 20px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "8px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>Apply Now</button>
       </div>
     </nav>
   );
@@ -103,10 +86,9 @@ function NavBar({ onStart }) {
 function LandingPage({ onStart }) {
   return (
     <div style={{ minHeight: "100vh", background: "#070711" }}>
-      <NavBar onStart={onStart} />
+      <NavBar onStart={onStart} darkMode={true} />
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "8rem 2rem 4rem", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: "20%", left: "50%", transform: "translateX(-50%)", width: "600px", height: "600px", background: "radial-gradient(circle, rgba(123,97,255,0.12) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", top: "40%", left: "15%", width: "300px", height: "300px", background: "radial-gradient(circle, rgba(0,201,167,0.07) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "6px 16px", background: "rgba(123,97,255,0.15)", border: "1px solid rgba(123,97,255,0.3)", borderRadius: "999px", fontSize: "13px", color: "#a78bfa", letterSpacing: "1px", marginBottom: "2rem" }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#00C9A7", display: "inline-block", animation: "pulse 2s infinite" }} />
           AI-Powered Talent Intelligence
@@ -114,13 +96,15 @@ function LandingPage({ onStart }) {
         <h1 style={{ fontSize: "clamp(2.8rem, 7vw, 5rem)", fontWeight: "900", lineHeight: 1.05, margin: "0 0 1.5rem", maxWidth: "800px", background: "linear-gradient(135deg, #fff 0%, #c4b5fd 50%, #00C9A7 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
           Beyond the CV. We Want to Know the Real You.
         </h1>
-        <p style={{ fontSize: "clamp(16px, 2vw, 20px)", color: "#888", lineHeight: 1.7, maxWidth: "580px", margin: "0 auto 1rem" }}>This isn't a typical application. We use AI to understand who you are, how you think, and where you'll genuinely thrive — not just what's on paper.</p>
-        <p style={{ fontSize: "15px", color: "#555", marginBottom: "3rem" }}>Takes about 10 minutes. No wrong answers.</p>
-        <button onClick={onStart} style={{ padding: "18px 48px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "14px", color: "#fff", fontSize: "17px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s", boxShadow: "0 4px 30px rgba(123,97,255,0.3)", marginBottom: "3rem" }} onMouseEnter={e => { e.target.style.transform = "translateY(-2px)"; e.target.style.boxShadow = "0 8px 40px rgba(123,97,255,0.5)"; }} onMouseLeave={e => { e.target.style.transform = "translateY(0)"; e.target.style.boxShadow = "0 4px 30px rgba(123,97,255,0.3)"; }}>
+        <p style={{ fontSize: "clamp(16px, 2vw, 20px)", color: "#888", lineHeight: 1.7, maxWidth: "580px", margin: "0 auto 1rem" }}>This isn't a typical application. We use AI to understand who you are, how you think, and where you'll genuinely thrive.</p>
+        <p style={{ fontSize: "15px", color: "#555", marginBottom: "3rem" }}>Takes about 5 minutes. No wrong answers.</p>
+        <button onClick={onStart} style={{ padding: "18px 48px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "14px", color: "#fff", fontSize: "17px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit", boxShadow: "0 4px 30px rgba(123,97,255,0.3)", marginBottom: "3rem" }}
+          onMouseEnter={e => { e.target.style.transform = "translateY(-2px)"; e.target.style.boxShadow = "0 8px 40px rgba(123,97,255,0.5)"; }}
+          onMouseLeave={e => { e.target.style.transform = "translateY(0)"; e.target.style.boxShadow = "0 4px 30px rgba(123,97,255,0.3)"; }}>
           Start My Application →
         </button>
         <div style={{ display: "flex", gap: "3rem", justifyContent: "center", flexWrap: "wrap" }}>
-          {[["23", "questions"], ["~10 min", "to complete"], ["AI-powered", "analysis"]].map(([big, small]) => (
+          {[["16", "questions"], ["~5 min", "to complete"], ["AI-powered", "analysis"]].map(([big, small]) => (
             <div key={big} style={{ textAlign: "center" }}>
               <div style={{ fontSize: "24px", fontWeight: "800", color: "#fff" }}>{big}</div>
               <div style={{ fontSize: "13px", color: "#555" }}>{small}</div>
@@ -132,22 +116,22 @@ function LandingPage({ onStart }) {
       <div id="features" style={{ padding: "6rem 2rem", maxWidth: "1100px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <div style={{ fontSize: "13px", letterSpacing: "3px", color: "#7B61FF", textTransform: "uppercase", marginBottom: "1rem" }}>Why HoneypotAdvisory</div>
-          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: "900", margin: 0 }}>Hiring intelligence that goes deeper.</h2>
+          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: "900", margin: 0, color: "#fff" }}>Hiring intelligence that goes deeper.</h2>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem" }}>
           {[
-            { icon: "🧠", title: "Clifton Strength Profiling", desc: "Identifies your specific Clifton theme — not just a category, but the precise talent that defines how you operate." },
-            { icon: "📊", title: "Rubric-Based Scoring", desc: "Evaluates depth, consistency, self-awareness, and clarity across all answers. Every score means something." },
-            { icon: "⚡", title: "Behavioral Intelligence", desc: "Detects ownership mindset, team orientation, and behavioral patterns that CVs never reveal." },
-            { icon: "🎯", title: "Role Match Engine", desc: "Matches candidates to the exact role and environment where they'll do their best work." },
-            { icon: "🛡️", title: "Bias-Controlled Analysis", desc: "AI focuses purely on content and patterns — ignoring grammar, writing style, and cultural differences." },
-            { icon: "🔐", title: "Private HR Dashboard", desc: "Full candidate profiles, analytics, and deep insights visible only to your HR team." },
+            { icon: "🧠", title: "Clifton Strength Profiling", desc: "Identifies your specific Clifton theme — the precise talent that defines how you operate." },
+            { icon: "📊", title: "Rubric-Based Scoring", desc: "Evaluates depth, consistency, self-awareness, and clarity. Every score means something." },
+            { icon: "⚡", title: "Behavioral Intelligence", desc: "Detects ownership mindset, team orientation, and patterns CVs never reveal." },
+            { icon: "🎯", title: "Role Match Engine", desc: "Matches candidates to the exact role where they'll do their best work." },
+            { icon: "🛡️", title: "Bias-Controlled Analysis", desc: "AI focuses purely on content — ignoring grammar, style, and cultural differences." },
+            { icon: "🔐", title: "Private HR Dashboard", desc: "Full candidate profiles, analytics, and insights visible only to your HR team." },
           ].map(f => (
             <div key={f.title} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "2rem", transition: "all 0.2s" }}
               onMouseEnter={e => { e.currentTarget.style.background = "rgba(123,97,255,0.08)"; e.currentTarget.style.borderColor = "rgba(123,97,255,0.3)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"; e.currentTarget.style.transform = "translateY(0)"; }}>
               <div style={{ fontSize: "32px", marginBottom: "1rem" }}>{f.icon}</div>
-              <div style={{ fontSize: "17px", fontWeight: "700", marginBottom: "0.5rem" }}>{f.title}</div>
+              <div style={{ fontSize: "17px", fontWeight: "700", marginBottom: "0.5rem", color: "#fff" }}>{f.title}</div>
               <div style={{ fontSize: "14px", color: "#666", lineHeight: 1.6 }}>{f.desc}</div>
             </div>
           ))}
@@ -156,23 +140,23 @@ function LandingPage({ onStart }) {
 
       <div id="how" style={{ padding: "6rem 2rem", maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
         <div style={{ fontSize: "13px", letterSpacing: "3px", color: "#00C9A7", textTransform: "uppercase", marginBottom: "1rem" }}>The Process</div>
-        <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: "900", margin: "0 0 4rem" }}>Simple, fast, insightful.</h2>
+        <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: "900", margin: "0 0 4rem", color: "#fff" }}>Simple, fast, insightful.</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {[
-            { num: "01", title: "Answer Thoughtfully", desc: "23 carefully crafted questions about who you are, how you think, and what you value. No trick questions." },
-            { num: "02", title: "AI Analyzes Your Profile", desc: "Our AI evaluates your answers across multiple dimensions and maps your specific Clifton strength theme." },
-            { num: "03", title: "HR Reviews Your Intelligence Report", desc: "Your hiring manager receives a detailed profile — strengths, behavioral signals, role fit, and a hiring recommendation." },
+            { num: "01", title: "Answer Thoughtfully", desc: "16 questions about who you are, how you think, and what you value." },
+            { num: "02", title: "AI Analyzes Your Profile", desc: "Our AI maps your specific Clifton strength theme and evaluates across 4 dimensions." },
+            { num: "03", title: "HR Reviews Your Intelligence Report", desc: "Your hiring manager receives a detailed profile with strengths, signals, and a recommendation." },
           ].map(s => (
             <div key={s.num} style={{ display: "flex", gap: "2rem", alignItems: "flex-start", textAlign: "left", padding: "2rem", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px" }}>
               <div style={{ fontSize: "3rem", fontWeight: "900", color: "rgba(123,97,255,0.3)", flexShrink: 0, lineHeight: 1 }}>{s.num}</div>
               <div>
-                <div style={{ fontSize: "18px", fontWeight: "700", marginBottom: "0.5rem" }}>{s.title}</div>
+                <div style={{ fontSize: "18px", fontWeight: "700", marginBottom: "0.5rem", color: "#fff" }}>{s.title}</div>
                 <div style={{ fontSize: "15px", color: "#666", lineHeight: 1.6 }}>{s.desc}</div>
               </div>
             </div>
           ))}
         </div>
-        <button onClick={onStart} style={{ marginTop: "3rem", padding: "18px 48px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "14px", color: "#fff", fontSize: "17px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s" }} onMouseEnter={e => e.target.style.transform = "translateY(-2px)"} onMouseLeave={e => e.target.style.transform = "translateY(0)"}>
+        <button onClick={onStart} style={{ marginTop: "3rem", padding: "18px 48px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "14px", color: "#fff", fontSize: "17px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>
           Begin My Application →
         </button>
       </div>
@@ -181,7 +165,7 @@ function LandingPage({ onStart }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "2rem", marginBottom: "2rem" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "0.8rem" }}>
-              <span style={{ fontSize: "20px" }}>🍯</span>
+              <span>🍯</span>
               <span style={{ fontWeight: "800", background: "linear-gradient(135deg, #E8FF5A, #00C9A7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>HoneypotAdvisory</span>
             </div>
             <p style={{ color: "#555", fontSize: "14px", maxWidth: "260px", lineHeight: 1.6, margin: 0 }}>AI-powered talent intelligence for companies that take hiring seriously.</p>
@@ -189,11 +173,11 @@ function LandingPage({ onStart }) {
           <div style={{ display: "flex", gap: "4rem", flexWrap: "wrap" }}>
             <div>
               <div style={{ fontSize: "12px", letterSpacing: "2px", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>Product</div>
-              {["Features", "How It Works", "Apply Now"].map(l => <div key={l} style={{ color: "#666", fontSize: "14px", marginBottom: "0.5rem", cursor: "pointer" }} onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = "#666"}>{l}</div>)}
+              {["Features", "How It Works", "Apply Now"].map(l => <div key={l} style={{ color: "#666", fontSize: "14px", marginBottom: "0.5rem", cursor: "pointer" }}>{l}</div>)}
             </div>
             <div>
               <div style={{ fontSize: "12px", letterSpacing: "2px", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>Company</div>
-              {["About", "Contact", "Privacy"].map(l => <div key={l} style={{ color: "#666", fontSize: "14px", marginBottom: "0.5rem", cursor: "pointer" }} onMouseEnter={e => e.target.style.color = "#fff"} onMouseLeave={e => e.target.style.color = "#666"}>{l}</div>)}
+              {["About", "Contact", "Privacy"].map(l => <div key={l} style={{ color: "#666", fontSize: "14px", marginBottom: "0.5rem", cursor: "pointer" }}>{l}</div>)}
             </div>
             <div>
               <div style={{ fontSize: "12px", letterSpacing: "2px", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>Contact</div>
@@ -210,7 +194,7 @@ function LandingPage({ onStart }) {
           <span style={{ color: "#444", fontSize: "13px" }}>Built with AI. Designed for humans.</span>
         </div>
       </footer>
-      <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } } * { box-sizing: border-box; } html { scroll-behavior: smooth; }`}</style>
+      <style>{`@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} } *{box-sizing:border-box} html{scroll-behavior:smooth}`}</style>
     </div>
   );
 }
@@ -222,9 +206,9 @@ function QuestionScreen({ question, value, onChange, onNext, onBack, current, to
     return !!value;
   };
   useEffect(() => {
-    const handler = (e) => { if (e.key === "Enter" && question.type !== "textarea" && isValid()) onNext(); };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    const h = (e) => { if (e.key === "Enter" && question.type !== "textarea" && isValid()) onNext(); };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
   }, [value]);
   const inputStyle = { width: "100%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "14px", padding: "16px 20px", color: "#fff", fontSize: "17px", fontFamily: "inherit", outline: "none", boxSizing: "border-box", transition: "border-color 0.2s, box-shadow 0.2s" };
   return (
@@ -288,7 +272,7 @@ function QuestionScreen({ question, value, onChange, onNext, onBack, current, to
             ) : <div />}
             {(question.type === "textarea" || question.type === "text" || question.type === "email" || question.type === "multichoice") && (
               <button onClick={onNext} disabled={!isValid()}
-                style={{ padding: "14px 32px", background: isValid() ? "linear-gradient(135deg, #7B61FF, #5a45cc)" : "rgba(255,255,255,0.05)", border: "none", borderRadius: "12px", color: isValid() ? "#fff" : "#444", fontSize: "15px", fontWeight: "700", cursor: isValid() ? "pointer" : "not-allowed", fontFamily: "inherit", transition: "all 0.2s" }}>
+                style={{ padding: "14px 32px", background: isValid() ? "linear-gradient(135deg, #7B61FF, #5a45cc)" : "rgba(255,255,255,0.05)", border: "none", borderRadius: "12px", color: isValid() ? "#fff" : "#444", fontSize: "15px", fontWeight: "700", cursor: isValid() ? "pointer" : "not-allowed", fontFamily: "inherit" }}>
                 {current === total ? "Submit Application →" : "Next →"}
               </button>
             )}
@@ -298,13 +282,13 @@ function QuestionScreen({ question, value, onChange, onNext, onBack, current, to
           )}
         </div>
       </div>
-      <style>{`* { box-sizing: border-box; }`}</style>
+      <style>{`*{box-sizing:border-box}`}</style>
     </div>
   );
 }
 
 function LoadingScreen() {
-  const messages = ["Reading between the lines...", "Mapping your Clifton theme...", "Evaluating depth and consistency...", "Detecting behavioral signals...", "Building your intelligence report...", "Almost there — this one's worth waiting for..."];
+  const messages = ["Reading between the lines...", "Mapping your Clifton theme...", "Evaluating depth and consistency...", "Detecting behavioral signals...", "Building your intelligence report...", "Almost there..."];
   const [msgIdx, setMsgIdx] = useState(0);
   const [progress, setProgress] = useState(0);
   useEffect(() => {
@@ -317,12 +301,12 @@ function LoadingScreen() {
       <div style={{ fontSize: "48px", animation: "spin 3s linear infinite" }}>🍯</div>
       <div style={{ textAlign: "center" }}>
         <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0 0 0.5rem", background: "linear-gradient(135deg, #fff, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Analyzing your profile</h2>
-        <p style={{ color: "#666", fontSize: "16px", margin: 0, minHeight: "24px" }}>{messages[msgIdx]}</p>
+        <p style={{ color: "#666", fontSize: "16px", margin: 0 }}>{messages[msgIdx]}</p>
       </div>
       <div style={{ width: "300px", height: "4px", background: "rgba(255,255,255,0.06)", borderRadius: "2px", overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${progress}%`, background: "linear-gradient(90deg, #7B61FF, #00C9A7)", borderRadius: "2px", transition: "width 0.3s ease" }} />
       </div>
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 }
@@ -333,9 +317,9 @@ function ThankYouScreen({ name }) {
       <div style={{ textAlign: "center", maxWidth: "560px" }}>
         <div style={{ fontSize: "72px", marginBottom: "1.5rem" }}>🎉</div>
         <h1 style={{ fontSize: "2.5rem", fontWeight: "900", margin: "0 0 1rem", background: "linear-gradient(135deg, #fff, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Thank you, {name?.split(" ")[0] || "there"}!</h1>
-        <p style={{ fontSize: "18px", color: "#888", lineHeight: 1.8, marginBottom: "2rem" }}>Your application has been received. Our team will review your profile and reach out to you via email shortly.</p>
+        <p style={{ fontSize: "18px", color: "#888", lineHeight: 1.8, marginBottom: "2rem" }}>Your application has been received. Our team will review your profile and reach out via email shortly.</p>
         <div style={{ padding: "1.5rem 2rem", background: "rgba(123,97,255,0.08)", border: "1px solid rgba(123,97,255,0.2)", borderRadius: "16px" }}>
-          <p style={{ color: "#a78bfa", margin: 0, fontSize: "15px", lineHeight: 1.6 }}>✨ We loved getting to know you. Every answer you gave helps us find the right fit — for you and for us.</p>
+          <p style={{ color: "#a78bfa", margin: 0, fontSize: "15px", lineHeight: 1.6 }}>✨ We loved getting to know you. Every answer you gave helps us find the right fit.</p>
         </div>
         <p style={{ color: "#444", fontSize: "13px", marginTop: "2rem" }}>© 2026 HoneypotAdvisory · info@honeypotadvisory.com</p>
       </div>
@@ -345,36 +329,73 @@ function ThankYouScreen({ name }) {
 
 function HRLogin({ onLogin }) {
   const [password, setPassword] = useState("");
+  const [pin, setPin] = useState("");
+  const [step, setStep] = useState("password");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const handleLogin = async () => {
+
+  const handleSubmit = async () => {
     setLoading(true); setError("");
     try {
-      const res = await fetch(`${BACKEND_URL}/hr/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
+      const body = step === "password" ? { password } : { password, pin };
+      const res = await fetch(`${BACKEND_URL}/hr/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const data = await res.json();
-      if (data.success) onLogin(password);
-      else setError("Wrong password. Try again.");
+      if (data.success) { onLogin(password); }
+      else if (data.step === "pin") { setStep("pin"); setError(""); }
+      else { setError(data.message); }
     } catch { setError("Could not connect to server."); }
     setLoading(false);
   };
+
   return (
     <div style={{ minHeight: "100vh", background: "#070711", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
       <div style={{ width: "100%", maxWidth: "420px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "24px", padding: "3rem 2.5rem", textAlign: "center", backdropFilter: "blur(20px)" }}>
-        <div style={{ fontSize: "48px", marginBottom: "1rem" }}>🔐</div>
-        <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0 0 0.5rem" }}>HR Dashboard</h2>
+        <div style={{ fontSize: "48px", marginBottom: "1rem" }}>🍯</div>
+        <h2 style={{ fontSize: "1.8rem", fontWeight: "800", margin: "0 0 0.5rem", color: "#fff" }}>HR Dashboard</h2>
         <p style={{ color: "#555", fontSize: "14px", marginBottom: "2rem" }}>HoneypotAdvisory · Talent Intelligence</p>
-        <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="Enter HR password" style={{ width: "100%", padding: "14px 18px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", color: "#fff", fontSize: "15px", fontFamily: "inherit", outline: "none", boxSizing: "border-box", marginBottom: "1rem" }} />
+        <div style={{ display: "flex", justifyContent: "center", gap: "8px", marginBottom: "2rem" }}>
+          {[{ label: "Password", num: "1" }, { label: "PIN", num: "2" }].map((s, i) => (
+            <div key={s.label} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {i > 0 && <div style={{ width: "24px", height: "1px", background: "rgba(255,255,255,0.1)" }} />}
+              <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: (step === "pin" && i === 0) ? "rgba(0,201,167,0.3)" : (step === s.label.toLowerCase() ? "rgba(123,97,255,0.3)" : "rgba(255,255,255,0.05)"), border: `1px solid ${(step === "pin" && i === 0) ? "#00C9A7" : (step === s.label.toLowerCase() ? "#7B61FF" : "rgba(255,255,255,0.1)")}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "11px", fontWeight: "700", color: (step === "pin" && i === 0) ? "#00C9A7" : "#a78bfa" }}>
+                {step === "pin" && i === 0 ? "✓" : s.num}
+              </div>
+              <span style={{ fontSize: "12px", color: "#555" }}>{s.label}</span>
+            </div>
+          ))}
+        </div>
+        <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} placeholder="Enter HR password" disabled={step === "pin"}
+          style={{ width: "100%", padding: "14px 18px", background: step === "pin" ? "rgba(0,201,167,0.08)" : "rgba(255,255,255,0.05)", border: `1px solid ${step === "pin" ? "rgba(0,201,167,0.3)" : "rgba(255,255,255,0.1)"}`, borderRadius: "12px", color: step === "pin" ? "#00C9A7" : "#fff", fontSize: "15px", fontFamily: "inherit", outline: "none", boxSizing: "border-box", marginBottom: "1rem" }} />
+        {step === "pin" && (
+          <input type="password" value={pin} onChange={e => setPin(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} placeholder="Enter your 6-digit PIN" maxLength={6} autoFocus
+            style={{ width: "100%", padding: "14px 18px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(123,97,255,0.4)", borderRadius: "12px", color: "#fff", fontSize: "15px", fontFamily: "inherit", outline: "none", boxSizing: "border-box", letterSpacing: "6px", textAlign: "center", marginBottom: "1rem" }} />
+        )}
+        {step === "pin" && <p style={{ fontSize: "12px", color: "#555", marginBottom: "1rem" }}>Password verified ✓ — now enter your PIN</p>}
         {error && <p style={{ color: "#ff6b6b", fontSize: "14px", marginBottom: "1rem" }}>{error}</p>}
-        <button onClick={handleLogin} disabled={loading} style={{ width: "100%", padding: "14px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "12px", color: "#fff", fontSize: "16px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>
-          {loading ? "Verifying..." : "Enter Dashboard →"}
+        <button onClick={handleSubmit} disabled={loading || (step === "password" && !password) || (step === "pin" && pin.length < 6)}
+          style={{ width: "100%", padding: "14px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "12px", color: "#fff", fontSize: "16px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit", opacity: loading ? 0.7 : 1 }}>
+          {loading ? "Verifying..." : step === "password" ? "Continue →" : "Enter Dashboard →"}
         </button>
       </div>
     </div>
   );
 }
 
+function Avatar({ name, size = 40 }) {
+  const initials = name ? name.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() : "?";
+  const colors = ["#7B61FF", "#00C9A7", "#FF6B35", "#E8FF5A", "#a78bfa"];
+  const color = colors[name ? name.charCodeAt(0) % colors.length : 0];
+  return (
+    <div style={{ width: size, height: size, borderRadius: "50%", background: `${color}30`, border: `2px solid ${color}60`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.35, fontWeight: "800", color, flexShrink: 0 }}>
+      {initials}
+    </div>
+  );
+}
+
 function HRDashboard({ token }) {
   const [candidates, setCandidates] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState("overview");
   const [selected, setSelected] = useState(null);
@@ -382,29 +403,93 @@ function HRDashboard({ token }) {
   const [filterStrength, setFilterStrength] = useState("All");
   const [filterRec, setFilterRec] = useState("All");
   const [toast, setToast] = useState(null);
+  const [darkMode, setDarkMode] = useState(true);
+  const [newTask, setNewTask] = useState("");
+  const [newJob, setNewJob] = useState({ title: "", department: "", type: "Full-time" });
+
+  const bg = darkMode ? "#070711" : "#f0f2f8";
+  const cardBg = darkMode ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)";
+  const cardBorder = darkMode ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)";
+  const textPrimary = darkMode ? "#fff" : "#0a0a0a";
+  const textSecondary = darkMode ? "#888" : "#555";
+  const textMuted = darkMode ? "#555" : "#999";
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
 
+  const headers = { "x-hr-token": token };
+
   useEffect(() => {
-    fetch(`${BACKEND_URL}/hr/candidates`, { headers: { "x-hr-token": token } })
-      .then(r => r.json()).then(data => { setCandidates(Array.isArray(data) ? data : []); setLoading(false); })
-      .catch(() => setLoading(false));
+    Promise.all([
+      fetch(`${BACKEND_URL}/hr/candidates`, { headers }).then(r => r.json()),
+      fetch(`${BACKEND_URL}/hr/tasks`, { headers }).then(r => r.json()),
+      fetch(`${BACKEND_URL}/hr/jobs`, { headers }).then(r => r.json()),
+    ]).then(([c, t, j]) => {
+      setCandidates(Array.isArray(c) ? c : []);
+      setTasks(Array.isArray(t) ? t : []);
+      setJobs(Array.isArray(j) ? j : []);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, []);
 
   const toggleShortlist = async (id, current) => {
-    await fetch(`${BACKEND_URL}/hr/candidates/${id}/shortlist`, { method: "PATCH", headers: { "Content-Type": "application/json", "x-hr-token": token }, body: JSON.stringify({ shortlisted: !current }) });
+    await fetch(`${BACKEND_URL}/hr/candidates/${id}/shortlist`, { method: "PATCH", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ shortlisted: !current }) });
     setCandidates(prev => prev.map(c => c.id === id ? { ...c, shortlisted: !current } : c));
     if (selected?.id === id) setSelected(prev => ({ ...prev, shortlisted: !current }));
     showToast(!current ? "⭐ Added to shortlist" : "Removed from shortlist");
   };
 
+  const updateStatus = async (id, status) => {
+    await fetch(`${BACKEND_URL}/hr/candidates/${id}/status`, { method: "PATCH", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+    setCandidates(prev => prev.map(c => c.id === id ? { ...c, status } : c));
+    if (selected?.id === id) setSelected(prev => ({ ...prev, status }));
+    showToast(`Status updated to ${status}`);
+  };
+
   const deleteCandidate = async (id) => {
-    if (!window.confirm("Delete this candidate? This cannot be undone.")) return;
-    await fetch(`${BACKEND_URL}/hr/candidates/${id}`, { method: "DELETE", headers: { "x-hr-token": token } });
+    if (!window.confirm("Delete this candidate?")) return;
+    await fetch(`${BACKEND_URL}/hr/candidates/${id}`, { method: "DELETE", headers });
     setCandidates(prev => prev.filter(c => c.id !== id));
     setSelected(null); setPage("candidates");
     showToast("🗑️ Candidate deleted");
   };
+
+  const addTask = async () => {
+    if (!newTask.trim()) return;
+    const data = await fetch(`${BACKEND_URL}/hr/tasks`, { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ title: newTask }) }).then(r => r.json());
+    setTasks(prev => [data, ...prev]); setNewTask("");
+    showToast("✅ Task added");
+  };
+
+  const toggleTask = async (id, done) => {
+    await fetch(`${BACKEND_URL}/hr/tasks/${id}`, { method: "PATCH", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ done: !done }) });
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !done } : t));
+  };
+
+  const deleteTask = async (id) => {
+    await fetch(`${BACKEND_URL}/hr/tasks/${id}`, { method: "DELETE", headers });
+    setTasks(prev => prev.filter(t => t.id !== id));
+  };
+
+  const addJob = async () => {
+    if (!newJob.title.trim()) return;
+    const data = await fetch(`${BACKEND_URL}/hr/jobs`, { method: "POST", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify(newJob) }).then(r => r.json());
+    setJobs(prev => [data, ...prev]); setNewJob({ title: "", department: "", type: "Full-time" });
+    showToast("💼 Job posted");
+  };
+
+  const toggleJobStatus = async (id, current) => {
+    const status = current === "Open" ? "Closed" : "Open";
+    await fetch(`${BACKEND_URL}/hr/jobs/${id}`, { method: "PATCH", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+    setJobs(prev => prev.map(j => j.id === id ? { ...j, status } : j));
+    showToast(`Job marked as ${status}`);
+  };
+
+  const deleteJob = async (id) => {
+    await fetch(`${BACKEND_URL}/hr/jobs/${id}`, { method: "DELETE", headers });
+    setJobs(prev => prev.filter(j => j.id !== id));
+  };
+
+  const exportCSV = () => { window.open(`${BACKEND_URL}/hr/candidates/export`, "_blank"); };
 
   const filtered = candidates.filter(c => {
     const matchSearch = !search || c.name?.toLowerCase().includes(search.toLowerCase()) || c.email?.toLowerCase().includes(search.toLowerCase());
@@ -417,20 +502,22 @@ function HRDashboard({ token }) {
   const roleCounts = candidates.reduce((acc, c) => { const r = ROLES.find(r => r.id === c.role_id); if (r) acc[r.title] = (acc[r.title] || 0) + 1; return acc; }, {});
   const avgConfidence = candidates.length ? Math.round(candidates.reduce((a, c) => a + (c.confidence || 0), 0) / candidates.length) : 0;
   const strongYes = candidates.filter(c => c.hire_recommendation === "Strong Yes").length;
-
   const strengthPieData = Object.entries(STRENGTH_COLORS).map(([s, c]) => ({ label: s, value: strengthCounts[s] || 0, color: c.bg }));
-  const roleColors = ["#7B61FF", "#00C9A7", "#E8FF5A", "#FF6B35", "#a78bfa", "#ff6b6b", "#60a5fa", "#34d399", "#fbbf24", "#f472b6"];
+  const roleColors = ["#7B61FF", "#00C9A7", "#E8FF5A", "#FF6B35", "#a78bfa", "#ff6b6b", "#60a5fa", "#34d399"];
   const rolePieData = Object.entries(roleCounts).slice(0, 8).map(([label, value], i) => ({ label, value, color: roleColors[i % roleColors.length] }));
 
   const sidebarItems = [
     { id: "overview", icon: "🏠", label: "Overview" },
     { id: "candidates", icon: "👥", label: "All Candidates" },
     { id: "shortlisted", icon: "⭐", label: "Shortlisted" },
+    { id: "evaluations", icon: "📋", label: "Evaluations" },
+    { id: "tasks", icon: "✅", label: "Tasks" },
+    { id: "recruitment", icon: "💼", label: "Recruitment" },
     { id: "settings", icon: "⚙️", label: "Settings" },
   ];
 
-  const containerStyle = { minHeight: "100vh", background: "#070711", color: "#fff", fontFamily: "'Sora', system-ui, sans-serif", display: "flex" };
-  const sidebarStyle = { width: "240px", flexShrink: 0, background: "rgba(255,255,255,0.02)", borderRight: "1px solid rgba(255,255,255,0.06)", padding: "2rem 1rem", display: "flex", flexDirection: "column", gap: "4px", backdropFilter: "blur(20px)" };
+  const containerStyle = { minHeight: "100vh", background: bg, color: textPrimary, fontFamily: "'Sora', system-ui, sans-serif", display: "flex", transition: "background 0.3s" };
+  const sidebarStyle = { width: "240px", flexShrink: 0, background: darkMode ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.03)", borderRight: `1px solid ${cardBorder}`, padding: "2rem 1rem", display: "flex", flexDirection: "column", gap: "4px" };
 
   const Sidebar = () => (
     <div style={sidebarStyle}>
@@ -440,20 +527,33 @@ function HRDashboard({ token }) {
       </div>
       {sidebarItems.map(item => (
         <button key={item.id} onClick={() => { setPage(item.id); setSelected(null); }}
-          style={{ padding: "10px 14px", borderRadius: "10px", border: "none", background: page === item.id && !selected ? "rgba(123,97,255,0.15)" : "transparent", color: page === item.id && !selected ? "#a78bfa" : "#666", cursor: "pointer", fontSize: "14px", fontFamily: "inherit", display: "flex", alignItems: "center", gap: "10px", textAlign: "left", transition: "all 0.15s", borderLeft: page === item.id && !selected ? "2px solid #7B61FF" : "2px solid transparent" }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "#fff"; }}
-          onMouseLeave={e => { if (!(page === item.id && !selected)) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#666"; } }}>
+          style={{ padding: "10px 14px", borderRadius: "10px", border: "none", background: page === item.id && !selected ? (darkMode ? "rgba(123,97,255,0.15)" : "rgba(123,97,255,0.1)") : "transparent", color: page === item.id && !selected ? "#a78bfa" : textSecondary, cursor: "pointer", fontSize: "14px", fontFamily: "inherit", display: "flex", alignItems: "center", gap: "10px", textAlign: "left", transition: "all 0.15s", borderLeft: page === item.id && !selected ? "2px solid #7B61FF" : "2px solid transparent" }}
+          onMouseEnter={e => { e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)"; e.currentTarget.style.color = textPrimary; }}
+          onMouseLeave={e => { if (!(page === item.id && !selected)) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = textSecondary; } }}>
           {item.icon} {item.label}
           {item.id === "shortlisted" && candidates.filter(c => c.shortlisted).length > 0 && (
             <span style={{ marginLeft: "auto", background: "#E8FF5A", color: "#0a0a0a", borderRadius: "999px", padding: "1px 8px", fontSize: "11px", fontWeight: "700" }}>{candidates.filter(c => c.shortlisted).length}</span>
           )}
+          {item.id === "tasks" && tasks.filter(t => !t.done).length > 0 && (
+            <span style={{ marginLeft: "auto", background: "#7B61FF", color: "#fff", borderRadius: "999px", padding: "1px 8px", fontSize: "11px", fontWeight: "700" }}>{tasks.filter(t => !t.done).length}</span>
+          )}
         </button>
       ))}
       <div style={{ flex: 1 }} />
-      <div style={{ padding: "0.5rem", fontSize: "12px", color: "#333", display: "flex", alignItems: "center", gap: "6px" }}>
+      <div style={{ padding: "0.5rem", fontSize: "12px", color: textMuted, display: "flex", alignItems: "center", gap: "6px" }}>
         <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#00C9A7" }} />
         All systems operational
       </div>
+    </div>
+  );
+
+  if (loading) return (
+    <div style={{ ...containerStyle, alignItems: "center", justifyContent: "center" }}>
+      <div style={{ textAlign: "center", color: textSecondary }}>
+        <div style={{ fontSize: "48px", marginBottom: "1rem", animation: "spin 2s linear infinite" }}>🍯</div>
+        Loading dashboard...
+      </div>
+      <style>{`@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 
@@ -464,153 +564,140 @@ function HRDashboard({ token }) {
     const weaknesses = Array.isArray(selected.answers?.weaknessAnalysis) ? selected.answers.weaknessAnalysis : [];
     const watchpoints = Array.isArray(selected.answers?.watchpoints) ? selected.answers.watchpoints : [];
     const interviewQs = Array.isArray(selected.answers?.interviewFollowUps) ? selected.answers.interviewFollowUps : [];
-
     return (
       <div style={containerStyle}>
         <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
         <Sidebar />
         <div style={{ flex: 1, overflowY: "auto", padding: "2rem" }}>
-          <button onClick={() => setSelected(null)} style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", color: "#888", padding: "8px 16px", cursor: "pointer", fontFamily: "inherit", marginBottom: "2rem", fontSize: "14px" }}>← Back</button>
+          <button onClick={() => setSelected(null)} style={{ background: "transparent", border: `1px solid ${cardBorder}`, borderRadius: "8px", color: textSecondary, padding: "8px 16px", cursor: "pointer", fontFamily: "inherit", marginBottom: "2rem", fontSize: "14px" }}>← Back</button>
 
           {/* Clifton Reveal */}
           <div style={{ background: `linear-gradient(135deg, ${colors.bg}, ${colors.bg}bb)`, borderRadius: "24px", padding: "3rem", marginBottom: "1.5rem", position: "relative", overflow: "hidden", boxShadow: `0 20px 60px ${colors.glow}` }}>
             <div style={{ position: "absolute", top: "-40px", right: "-40px", width: "200px", height: "200px", background: "rgba(255,255,255,0.08)", borderRadius: "50%" }} />
-            <div style={{ position: "absolute", bottom: "-20px", left: "40%", width: "120px", height: "120px", background: "rgba(255,255,255,0.05)", borderRadius: "50%" }} />
-            <div style={{ position: "relative", zIndex: 1 }}>
-              <div style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "4px", color: colors.text, opacity: 0.6, textTransform: "uppercase", marginBottom: "0.3rem" }}>Clifton StrengthsFinder</div>
-              <div style={{ fontSize: "12px", fontWeight: "600", color: colors.text, opacity: 0.6, marginBottom: "0.2rem" }}>PRIMARY CLIFTON STRENGTH</div>
-              <div style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)", fontWeight: "900", color: colors.text, lineHeight: 1, marginBottom: "0.2rem" }}>{selected.clifton_theme || selected.primary_strength}</div>
-              <div style={{ fontSize: "15px", fontWeight: "600", color: colors.text, opacity: 0.7, marginBottom: "1rem" }}>{selected.primary_strength} Domain</div>
-              {selected.answers?.personaSnapshot && <div style={{ fontSize: "15px", color: colors.text, opacity: 0.85, lineHeight: 1.6, maxWidth: "600px", fontStyle: "italic", marginBottom: "1rem" }}>"{selected.answers.personaSnapshot}"</div>}
-              <div style={{ fontSize: "15px", color: colors.text, opacity: 0.8, lineHeight: 1.6, maxWidth: "600px" }}>{selected.full_assessment}</div>
+            <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-start", gap: "1.5rem" }}>
+              <Avatar name={selected.name} size={56} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: "11px", fontWeight: "700", letterSpacing: "4px", color: colors.text, opacity: 0.6, textTransform: "uppercase", marginBottom: "0.2rem" }}>PRIMARY CLIFTON STRENGTH</div>
+                <div style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: "900", color: colors.text, lineHeight: 1, marginBottom: "0.2rem" }}>{selected.clifton_theme || selected.primary_strength}</div>
+                <div style={{ fontSize: "14px", fontWeight: "600", color: colors.text, opacity: 0.7, marginBottom: "1rem" }}>{selected.primary_strength} Domain</div>
+                {selected.answers?.personaSnapshot && <div style={{ fontSize: "14px", color: colors.text, opacity: 0.8, fontStyle: "italic", marginBottom: "0.8rem" }}>"{selected.answers.personaSnapshot}"</div>}
+                <div style={{ fontSize: "14px", color: colors.text, opacity: 0.85, lineHeight: 1.6 }}>{selected.full_assessment}</div>
+              </div>
             </div>
           </div>
 
-          {/* Hire Rec + Secondary */}
-          <div style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+          {/* Status + Rec */}
+          <div style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem", flexWrap: "wrap", alignItems: "center" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", background: `${recColor}18`, border: `1px solid ${recColor}44`, borderRadius: "999px" }}>
               <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: recColor }} />
-              <span style={{ color: recColor, fontWeight: "700", fontSize: "15px" }}>Hire Recommendation: {selected.hire_recommendation}</span>
+              <span style={{ color: recColor, fontWeight: "700", fontSize: "14px" }}>{selected.hire_recommendation}</span>
             </div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "10px 20px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "999px" }}>
-              <span style={{ color: "#888", fontSize: "14px" }}>Also strong in: <span style={{ color: "#fff", fontWeight: "600" }}>{selected.secondary_strength}</span></span>
-            </div>
+            <select value={selected.status || "Reviewing"} onChange={e => updateStatus(selected.id, e.target.value)}
+              style={{ padding: "10px 16px", background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", border: `1px solid ${cardBorder}`, borderRadius: "999px", color: textPrimary, fontSize: "14px", fontFamily: "inherit", outline: "none", cursor: "pointer" }}>
+              {["Reviewing", "Interviewing", "Hired", "Rejected"].map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
           </div>
 
           {/* Rubric */}
-          <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "2rem", marginBottom: "1rem" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>Assessment Breakdown</div>
+          <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem", marginBottom: "1rem" }}>
+            <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "1.5rem" }}>Assessment Breakdown</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
               {[{ label: "Depth", value: selected.rubric_depth, color: "#7B61FF" }, { label: "Consistency", value: selected.rubric_consistency, color: "#00C9A7" }, { label: "Self-Awareness", value: selected.rubric_self_awareness, color: "#E8FF5A" }, { label: "Clarity", value: selected.rubric_clarity, color: "#FF6B35" }].map(r => (
                 <div key={r.label}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                    <span style={{ fontSize: "13px", color: "#888" }}>{r.label}</span>
+                    <span style={{ fontSize: "13px", color: textSecondary }}>{r.label}</span>
                     <span style={{ fontSize: "13px", fontWeight: "700", color: r.color }}>{r.value || 0}/25</span>
                   </div>
-                  <div style={{ height: "6px", background: "rgba(255,255,255,0.06)", borderRadius: "3px" }}>
-                    <div style={{ height: "100%", width: `${((r.value || 0) / 25) * 100}%`, background: r.color, borderRadius: "3px", transition: "width 0.8s ease" }} />
+                  <div style={{ height: "6px", background: darkMode ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)", borderRadius: "3px" }}>
+                    <div style={{ height: "100%", width: `${((r.value || 0) / 25) * 100}%`, background: r.color, borderRadius: "3px" }} />
                   </div>
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: "1.5rem", paddingTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.05)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "#666", fontSize: "14px" }}>Overall Match Score</span>
-              <span style={{ fontSize: "2rem", fontWeight: "900" }}>{selected.confidence}%</span>
+            <div style={{ marginTop: "1.5rem", paddingTop: "1.5rem", borderTop: `1px solid ${cardBorder}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: textSecondary, fontSize: "14px" }}>Overall Match Score</span>
+              <span style={{ fontSize: "2rem", fontWeight: "900", color: textPrimary }}>{selected.confidence}%</span>
             </div>
           </div>
 
-          {/* Green Flags + Growth Edge */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
             <div style={{ background: "rgba(0,201,167,0.05)", border: "1px solid rgba(0,201,167,0.15)", borderRadius: "16px", padding: "1.5rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#00C9A7", textTransform: "uppercase", marginBottom: "1rem" }}>✨ Green Flags</div>
               {(Array.isArray(selected.green_flags) ? selected.green_flags : []).map((f, i) => (
-                <div key={i} style={{ fontSize: "14px", color: "#ccc", lineHeight: 1.5, marginBottom: "0.7rem", paddingLeft: "0.8rem", borderLeft: "2px solid #00C9A7" }}>{f}</div>
+                <div key={i} style={{ fontSize: "13px", color: textSecondary, lineHeight: 1.5, marginBottom: "0.6rem", paddingLeft: "0.8rem", borderLeft: "2px solid #00C9A7" }}>{f}</div>
               ))}
             </div>
             <div style={{ background: "rgba(232,255,90,0.04)", border: "1px solid rgba(232,255,90,0.15)", borderRadius: "16px", padding: "1.5rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#E8FF5A", textTransform: "uppercase", marginBottom: "1rem" }}>🌱 Growth Edge</div>
-              <div style={{ fontSize: "14px", color: "#ccc", lineHeight: 1.6, marginBottom: "1.2rem" }}>{selected.growth_edge}</div>
-              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "0.5rem" }}>Behavioral Signals</div>
+              <div style={{ fontSize: "13px", color: textSecondary, lineHeight: 1.6, marginBottom: "1rem" }}>{selected.growth_edge}</div>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                <span style={{ padding: "4px 12px", borderRadius: "999px", background: "rgba(123,97,255,0.15)", border: "1px solid rgba(123,97,255,0.3)", fontSize: "12px", color: "#a78bfa" }}>{selected.locus_of_control} Locus</span>
-                <span style={{ padding: "4px 12px", borderRadius: "999px", background: "rgba(0,201,167,0.1)", border: "1px solid rgba(0,201,167,0.3)", fontSize: "12px", color: "#00C9A7" }}>{selected.team_orientation}</span>
+                <span style={{ padding: "3px 10px", borderRadius: "999px", background: "rgba(123,97,255,0.15)", border: "1px solid rgba(123,97,255,0.3)", fontSize: "11px", color: "#a78bfa" }}>{selected.locus_of_control} Locus</span>
+                <span style={{ padding: "3px 10px", borderRadius: "999px", background: "rgba(0,201,167,0.1)", border: "1px solid rgba(0,201,167,0.3)", fontSize: "11px", color: "#00C9A7" }}>{selected.team_orientation}</span>
               </div>
             </div>
           </div>
 
-          {/* Weakness Analysis */}
           <div style={{ background: "rgba(255,107,107,0.05)", border: "1px solid rgba(255,107,107,0.2)", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem" }}>
             <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#ff6b6b", textTransform: "uppercase", marginBottom: "1rem" }}>⚠️ Weakness Analysis</div>
-            {weaknesses.length > 0 ? weaknesses.map((w, i) => (
-              <div key={i} style={{ fontSize: "14px", color: "#ccc", lineHeight: 1.6, marginBottom: "0.7rem", paddingLeft: "0.8rem", borderLeft: "2px solid #ff6b6b" }}>{w}</div>
-            )) : <div style={{ fontSize: "14px", color: "#555" }}>Complete a full assessment to see weakness analysis.</div>}
+            {weaknesses.length > 0 ? weaknesses.map((w, i) => <div key={i} style={{ fontSize: "13px", color: textSecondary, lineHeight: 1.6, marginBottom: "0.6rem", paddingLeft: "0.8rem", borderLeft: "2px solid #ff6b6b" }}>{w}</div>) : <div style={{ fontSize: "13px", color: textMuted }}>No weaknesses flagged.</div>}
           </div>
 
-          {/* Watchpoints */}
           <div style={{ background: "rgba(255,165,0,0.04)", border: "1px solid rgba(255,165,0,0.2)", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem" }}>
             <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#ffa500", textTransform: "uppercase", marginBottom: "1rem" }}>👁️ Watchpoints</div>
-            {watchpoints.length > 0 ? watchpoints.map((w, i) => (
-              <div key={i} style={{ fontSize: "14px", color: "#ccc", lineHeight: 1.6, marginBottom: "0.7rem", paddingLeft: "0.8rem", borderLeft: "2px solid #ffa500" }}>{w}</div>
-            )) : <div style={{ fontSize: "14px", color: "#555" }}>No watchpoints flagged.</div>}
+            {watchpoints.length > 0 ? watchpoints.map((w, i) => <div key={i} style={{ fontSize: "13px", color: textSecondary, lineHeight: 1.6, marginBottom: "0.6rem", paddingLeft: "0.8rem", borderLeft: "2px solid #ffa500" }}>{w}</div>) : <div style={{ fontSize: "13px", color: textMuted }}>No watchpoints flagged.</div>}
           </div>
 
-          {/* Interview Questions */}
           <div style={{ background: "rgba(123,97,255,0.05)", border: "1px solid rgba(123,97,255,0.2)", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#a78bfa", textTransform: "uppercase", marginBottom: "1rem" }}>🎯 AI-Suggested Interview Questions</div>
-            <div style={{ fontSize: "13px", color: "#555", marginBottom: "1rem" }}>Ask these in the live interview to probe areas the AI flagged:</div>
+            <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#a78bfa", textTransform: "uppercase", marginBottom: "1rem" }}>🎯 Interview Questions</div>
             {interviewQs.length > 0 ? interviewQs.map((q, i) => (
-              <div key={i} style={{ fontSize: "14px", color: "#ccc", lineHeight: 1.6, marginBottom: "0.8rem", padding: "0.8rem 1rem", background: "rgba(123,97,255,0.08)", borderRadius: "10px", display: "flex", gap: "10px" }}>
+              <div key={i} style={{ fontSize: "13px", color: textSecondary, lineHeight: 1.6, marginBottom: "0.8rem", padding: "0.8rem 1rem", background: "rgba(123,97,255,0.08)", borderRadius: "10px", display: "flex", gap: "10px" }}>
                 <span style={{ color: "#7B61FF", fontWeight: "700", flexShrink: 0 }}>Q{i + 1}.</span> {q}
               </div>
-            )) : <div style={{ fontSize: "14px", color: "#555" }}>No follow-up questions generated.</div>}
+            )) : <div style={{ fontSize: "13px", color: textMuted }}>No questions generated.</div>}
           </div>
 
-          {/* Role + Environment */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
-            <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "16px", padding: "1.5rem" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#666", textTransform: "uppercase", marginBottom: "0.8rem" }}>Best Fit Role</div>
-              <div style={{ fontSize: "22px", marginBottom: "0.3rem" }}>{role.emoji} {role.title}</div>
-              <div style={{ fontSize: "13px", color: "#666", lineHeight: 1.5 }}>{role.desc}</div>
+            <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.5rem" }}>
+              <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "0.8rem" }}>Best Fit Role</div>
+              <div style={{ fontSize: "20px", marginBottom: "0.3rem" }}>{role.emoji} {role.title}</div>
+              <div style={{ fontSize: "13px", color: textSecondary, lineHeight: 1.5 }}>{role.desc}</div>
             </div>
             <div style={{ background: "rgba(123,97,255,0.05)", border: "1px solid rgba(123,97,255,0.15)", borderRadius: "16px", padding: "1.5rem" }}>
               <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#a78bfa", textTransform: "uppercase", marginBottom: "0.8rem" }}>Where They Thrive</div>
-              <div style={{ fontSize: "14px", color: "#ccc", lineHeight: 1.6 }}>{selected.environment}</div>
+              <div style={{ fontSize: "13px", color: textSecondary, lineHeight: 1.6 }}>{selected.environment}</div>
             </div>
           </div>
 
-          {/* Hiring Note */}
           <div style={{ background: "rgba(232,255,90,0.04)", border: "1px solid rgba(232,255,90,0.15)", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem" }}>
             <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#E8FF5A", textTransform: "uppercase", marginBottom: "0.8rem" }}>🔒 Hiring Manager Note</div>
-            <div style={{ fontSize: "15px", color: "#ccc", lineHeight: 1.7 }}>{selected.hiring_note}</div>
+            <div style={{ fontSize: "14px", color: textSecondary, lineHeight: 1.7 }}>{selected.hiring_note}</div>
           </div>
 
-          {/* Contact + Actions */}
-          <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+          <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
             <div>
-              <div style={{ fontSize: "11px", letterSpacing: "2px", color: "#555", textTransform: "uppercase", marginBottom: "0.4rem" }}>Contact</div>
-              <a href={`mailto:${selected.email}`} style={{ color: "#a78bfa", fontSize: "15px", textDecoration: "none" }}>{selected.email || "No email provided"}</a>
+              <div style={{ fontSize: "11px", letterSpacing: "2px", color: textMuted, textTransform: "uppercase", marginBottom: "0.4rem" }}>Contact</div>
+              <a href={`mailto:${selected.email}`} style={{ color: "#a78bfa", fontSize: "14px", textDecoration: "none" }}>{selected.email || "No email"}</a>
             </div>
             <div style={{ display: "flex", gap: "0.8rem" }}>
-              <button onClick={() => toggleShortlist(selected.id, selected.shortlisted)} style={{ padding: "10px 20px", background: selected.shortlisted ? "rgba(232,255,90,0.15)" : "rgba(255,255,255,0.05)", border: `1px solid ${selected.shortlisted ? "rgba(232,255,90,0.4)" : "rgba(255,255,255,0.1)"}`, borderRadius: "10px", color: selected.shortlisted ? "#E8FF5A" : "#888", cursor: "pointer", fontFamily: "inherit", fontSize: "14px" }}>
+              <button onClick={() => toggleShortlist(selected.id, selected.shortlisted)} style={{ padding: "10px 20px", background: selected.shortlisted ? "rgba(232,255,90,0.15)" : cardBg, border: `1px solid ${selected.shortlisted ? "rgba(232,255,90,0.4)" : cardBorder}`, borderRadius: "10px", color: selected.shortlisted ? "#E8FF5A" : textSecondary, cursor: "pointer", fontFamily: "inherit", fontSize: "14px" }}>
                 {selected.shortlisted ? "⭐ Shortlisted" : "☆ Shortlist"}
               </button>
               <button onClick={() => deleteCandidate(selected.id)} style={{ padding: "10px 20px", background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.2)", borderRadius: "10px", color: "#ff6b6b", cursor: "pointer", fontFamily: "inherit", fontSize: "14px" }}>🗑️ Delete</button>
             </div>
           </div>
 
-          {/* All Responses */}
-          <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "16px", padding: "1.5rem" }}>
-            <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.2rem" }}>All Responses</div>
+          <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.5rem" }}>
+            <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "1.2rem" }}>All Responses</div>
             {selected.answers && Object.entries(selected.answers).filter(([k]) => !["weaknessAnalysis", "watchpoints", "interviewFollowUps", "personaSnapshot"].includes(k)).map(([key, val]) => (
-              <div key={key} style={{ marginBottom: "1rem", paddingBottom: "1rem", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                <div style={{ fontSize: "11px", color: "#555", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "0.3rem" }}>{key}</div>
-                <div style={{ fontSize: "14px", color: "#bbb", lineHeight: 1.6 }}>{val}</div>
+              <div key={key} style={{ marginBottom: "1rem", paddingBottom: "1rem", borderBottom: `1px solid ${cardBorder}` }}>
+                <div style={{ fontSize: "11px", color: textMuted, textTransform: "uppercase", letterSpacing: "1px", marginBottom: "0.3rem" }}>{key}</div>
+                <div style={{ fontSize: "13px", color: textSecondary, lineHeight: 1.6 }}>{val}</div>
               </div>
             ))}
           </div>
-          <div style={{ fontSize: "12px", color: "#444", marginTop: "1rem", textAlign: "right" }}>Submitted: {new Date(selected.created_at).toLocaleString()}</div>
+          <div style={{ fontSize: "12px", color: textMuted, marginTop: "1rem", textAlign: "right" }}>Submitted: {new Date(selected.created_at).toLocaleString()}</div>
         </div>
-        {toast && <div style={{ position: "fixed", bottom: "2rem", right: "2rem", padding: "12px 20px", background: "rgba(30,30,50,0.95)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", color: "#fff", fontSize: "14px", backdropFilter: "blur(20px)", zIndex: 999 }}>{toast}</div>}
+        {toast && <div style={{ position: "fixed", bottom: "2rem", right: "2rem", padding: "12px 20px", background: darkMode ? "rgba(30,30,50,0.95)" : "rgba(255,255,255,0.95)", border: `1px solid ${cardBorder}`, borderRadius: "12px", color: textPrimary, fontSize: "14px", backdropFilter: "blur(20px)", zIndex: 999 }}>{toast}</div>}
       </div>
     );
   }
@@ -621,100 +708,81 @@ function HRDashboard({ token }) {
       <Sidebar />
       <div style={{ flex: 1, overflowY: "auto", padding: "2.5rem" }}>
 
-        {/* OVERVIEW */}
         {page === "overview" && (
           <div>
-            <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: "0 0 0.3rem" }}>Overview</h1>
-            <p style={{ color: "#555", margin: "0 0 2.5rem", fontSize: "14px" }}>Welcome back. Here's your talent pipeline at a glance.</p>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2.5rem" }}>
+              <div>
+                <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: "0 0 0.3rem", color: textPrimary }}>Overview</h1>
+                <p style={{ color: textSecondary, margin: 0, fontSize: "14px" }}>Your talent pipeline at a glance.</p>
+              </div>
+              <button onClick={exportCSV} style={{ padding: "10px 20px", background: "rgba(0,201,167,0.1)", border: "1px solid rgba(0,201,167,0.3)", borderRadius: "10px", color: "#00C9A7", cursor: "pointer", fontFamily: "inherit", fontSize: "14px", fontWeight: "600" }}>⬇️ Export CSV</button>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "1rem", marginBottom: "2rem" }}>
               {[{ label: "Total Candidates", value: candidates.length, color: "#7B61FF", icon: "👥" }, { label: "Avg Match Score", value: `${avgConfidence}%`, color: "#00C9A7", icon: "📊" }, { label: "Strong Yes", value: strongYes, color: "#E8FF5A", icon: "⭐" }, { label: "Shortlisted", value: candidates.filter(c => c.shortlisted).length, color: "#FF6B35", icon: "🎯" }].map(s => (
-                <div key={s.label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "16px", padding: "1.5rem" }}>
+                <div key={s.label} style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.5rem" }}>
                   <div style={{ fontSize: "20px", marginBottom: "0.5rem" }}>{s.icon}</div>
                   <div style={{ fontSize: "2rem", fontWeight: "900", color: s.color }}>{s.value}</div>
-                  <div style={{ fontSize: "12px", color: "#555", marginTop: "0.3rem" }}>{s.label}</div>
+                  <div style={{ fontSize: "12px", color: textMuted, marginTop: "0.3rem" }}>{s.label}</div>
                 </div>
               ))}
             </div>
-
-            {/* Charts Row */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "1rem", marginBottom: "2rem" }}>
-              {/* Strength Bars */}
-              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px", padding: "1.5rem" }}>
-                <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.2rem" }}>Strengths</div>
-                {candidates.length === 0 ? <div style={{ color: "#444", fontSize: "13px", textAlign: "center", padding: "1rem 0" }}>No data yet</div> :
-                  Object.entries(STRENGTH_COLORS).map(([s, c]) => (
-                    <div key={s} style={{ marginBottom: "0.8rem" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
-                        <span style={{ fontSize: "11px", color: "#777" }}>{s.split(" ")[0]}</span>
-                        <span style={{ fontSize: "11px", fontWeight: "700", color: c.bg }}>{strengthCounts[s] || 0}</span>
-                      </div>
-                      <div style={{ height: "5px", background: "rgba(255,255,255,0.05)", borderRadius: "3px" }}>
-                        <div style={{ height: "100%", width: candidates.length ? `${((strengthCounts[s] || 0) / candidates.length) * 100}%` : "0%", background: c.bg, borderRadius: "3px" }} />
-                      </div>
+              <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "1.5rem" }}>
+                <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "1rem" }}>Strengths</div>
+                {Object.entries(STRENGTH_COLORS).map(([s, c]) => (
+                  <div key={s} style={{ marginBottom: "0.8rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
+                      <span style={{ fontSize: "11px", color: textSecondary }}>{s.split(" ")[0]}</span>
+                      <span style={{ fontSize: "11px", fontWeight: "700", color: c.bg }}>{strengthCounts[s] || 0}</span>
                     </div>
-                  ))
-                }
+                    <div style={{ height: "5px", background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", borderRadius: "3px" }}>
+                      <div style={{ height: "100%", width: candidates.length ? `${((strengthCounts[s] || 0) / candidates.length) * 100}%` : "0%", background: c.bg, borderRadius: "3px" }} />
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              {/* Strength Pie */}
-              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px", padding: "1.5rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "4px", alignSelf: "flex-start" }}>Strength Mix</div>
-<div style={{ fontSize: "11px", color: "#444", marginBottom: "1rem", alignSelf: "flex-start" }}>Clifton domain breakdown</div>
-                <PieChart data={strengthPieData} size={120} />
+              <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "1.5rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "4px", alignSelf: "flex-start" }}>Strength Mix</div>
+                <div style={{ fontSize: "11px", color: textMuted, marginBottom: "1rem", alignSelf: "flex-start" }}>Clifton domain breakdown</div>
+                <PieChart data={strengthPieData} size={110} />
                 <div style={{ marginTop: "0.8rem", display: "flex", flexWrap: "wrap", gap: "4px", justifyContent: "center" }}>
                   {strengthPieData.filter(d => d.value > 0).map(d => (
-                    <div key={d.label} style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                    <div key={d.label} style={{ display: "flex", alignItems: "center", gap: "3px" }}>
                       <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: d.color }} />
-                      <span style={{ fontSize: "10px", color: "#666" }}>{d.label.split(" ")[0]}</span>
+                      <span style={{ fontSize: "10px", color: textMuted }}>{d.label.split(" ")[0]}</span>
                     </div>
                   ))}
                 </div>
               </div>
-
-              {/* Role Pie */}
-              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px", padding: "1.5rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "4px", alignSelf: "flex-start" }}>Role Mix</div>
-<div style={{ fontSize: "11px", color: "#444", marginBottom: "1rem", alignSelf: "flex-start" }}>Best fit roles across candidates</div>
-                <PieChart data={rolePieData.length ? rolePieData : [{ label: "None", value: 1, color: "rgba(255,255,255,0.05)" }]} size={120} />
-                <div style={{ marginTop: "0.8rem", display: "flex", flexWrap: "wrap", gap: "4px", justifyContent: "center" }}>
-                  {rolePieData.filter(d => d.value > 0).map(d => (
-                    <div key={d.label} style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                      <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: d.color }} />
-                      <span style={{ fontSize: "10px", color: "#666" }}>{d.label.split(" ")[0]}</span>
-                    </div>
-                  ))}
-                </div>
+              <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "1.5rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "4px", alignSelf: "flex-start" }}>Role Mix</div>
+                <div style={{ fontSize: "11px", color: textMuted, marginBottom: "1rem", alignSelf: "flex-start" }}>Best fit roles across candidates</div>
+                <PieChart data={rolePieData.length ? rolePieData : [{ label: "None", value: 1, color: "rgba(255,255,255,0.05)" }]} size={110} />
               </div>
-
-              {/* Hire Rec Bars */}
-              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px", padding: "1.5rem" }}>
-                <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.2rem" }}>Recommendations</div>
-                {candidates.length === 0 ? <div style={{ color: "#444", fontSize: "13px", textAlign: "center", padding: "1rem 0" }}>No data yet</div> :
-                  [["Strong Yes", "#00C9A7"], ["Yes", "#E8FF5A"], ["Maybe", "#FF6B35"]].map(([r, color]) => {
-                    const count = candidates.filter(c => c.hire_recommendation === r).length;
-                    return (
-                      <div key={r} style={{ marginBottom: "0.8rem" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
-                          <span style={{ fontSize: "11px", color: "#777" }}>{r}</span>
-                          <span style={{ fontSize: "11px", fontWeight: "700", color }}>{count}</span>
-                        </div>
-                        <div style={{ height: "5px", background: "rgba(255,255,255,0.05)", borderRadius: "3px" }}>
-                          <div style={{ height: "100%", width: candidates.length ? `${(count / candidates.length) * 100}%` : "0%", background: color, borderRadius: "3px" }} />
-                        </div>
+              <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "1.5rem" }}>
+                <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "1rem" }}>Recommendations</div>
+                {[["Strong Yes", "#00C9A7"], ["Yes", "#E8FF5A"], ["Maybe", "#FF6B35"]].map(([r, color]) => {
+                  const count = candidates.filter(c => c.hire_recommendation === r).length;
+                  return (
+                    <div key={r} style={{ marginBottom: "0.8rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
+                        <span style={{ fontSize: "11px", color: textSecondary }}>{r}</span>
+                        <span style={{ fontSize: "11px", fontWeight: "700", color }}>{count}</span>
                       </div>
-                    );
-                  })
-                }
+                      <div style={{ height: "5px", background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", borderRadius: "3px" }}>
+                        <div style={{ height: "100%", width: candidates.length ? `${(count / candidates.length) * 100}%` : "0%", background: color, borderRadius: "3px" }} />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-
-            {/* Recent */}
-            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px", padding: "2rem" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>Recent Submissions</div>
+            <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem" }}>
+              <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "1.5rem" }}>Recent Submissions</div>
               {candidates.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "3rem", color: "#444" }}>
+                <div style={{ textAlign: "center", padding: "3rem", color: textMuted }}>
                   <div style={{ fontSize: "48px", marginBottom: "1rem" }}>☕</div>
-                  <div style={{ fontSize: "16px", fontWeight: "600", marginBottom: "0.5rem" }}>The waiting room is empty.</div>
+                  <div style={{ fontSize: "16px", fontWeight: "600", marginBottom: "0.5rem", color: textSecondary }}>The waiting room is empty.</div>
                   <div style={{ fontSize: "14px" }}>Share your application link to get started!</div>
                 </div>
               ) : candidates.slice(0, 5).map(c => {
@@ -723,13 +791,13 @@ function HRDashboard({ token }) {
                 const recColor = { "Strong Yes": "#00C9A7", "Yes": "#E8FF5A", "Maybe": "#FF6B35" }[c.hire_recommendation] || "#888";
                 return (
                   <div key={c.id} onClick={() => setSelected(c)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1rem", borderRadius: "12px", cursor: "pointer", transition: "background 0.15s", marginBottom: "4px" }}
-                    onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.04)"}
+                    onMouseEnter={e => e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)"}
                     onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                      <div style={{ width: "10px", height: "10px", borderRadius: "50%", background: colors.bg, flexShrink: 0 }} />
+                      <Avatar name={c.name} size={36} />
                       <div>
-                        <div style={{ fontSize: "15px", fontWeight: "600" }}>{c.name}</div>
-                        <div style={{ fontSize: "12px", color: "#555" }}>{c.clifton_theme || c.primary_strength} · {role?.title || c.role_id}</div>
+                        <div style={{ fontSize: "15px", fontWeight: "600", color: textPrimary }}>{c.name}</div>
+                        <div style={{ fontSize: "12px", color: textMuted }}>{c.clifton_theme || c.primary_strength} · {role?.title || c.role_id}</div>
                       </div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
@@ -743,52 +811,48 @@ function HRDashboard({ token }) {
           </div>
         )}
 
-        {/* ALL CANDIDATES + SHORTLISTED */}
         {(page === "candidates" || page === "shortlisted") && (
           <div>
-            <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: "0 0 0.3rem" }}>{page === "shortlisted" ? "⭐ Shortlisted" : "All Candidates"}</h1>
-            <p style={{ color: "#555", margin: "0 0 2rem", fontSize: "14px" }}>{page === "shortlisted" ? `${candidates.filter(c => c.shortlisted).length} candidates shortlisted` : `${candidates.length} total submissions`}</p>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
+              <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: 0, color: textPrimary }}>{page === "shortlisted" ? "⭐ Shortlisted" : "All Candidates"}</h1>
+              <button onClick={exportCSV} style={{ padding: "8px 16px", background: "rgba(0,201,167,0.1)", border: "1px solid rgba(0,201,167,0.3)", borderRadius: "8px", color: "#00C9A7", cursor: "pointer", fontFamily: "inherit", fontSize: "13px" }}>⬇️ Export CSV</button>
+            </div>
+            <p style={{ color: textSecondary, margin: "0 0 2rem", fontSize: "14px" }}>{page === "shortlisted" ? `${candidates.filter(c => c.shortlisted).length} shortlisted` : `${candidates.length} total`}</p>
             <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem", flexWrap: "wrap" }}>
-              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search by name or email..." style={{ flex: 1, minWidth: "200px", padding: "10px 16px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", color: "#fff", fontSize: "14px", fontFamily: "inherit", outline: "none" }} />
-              <select value={filterStrength} onChange={e => setFilterStrength(e.target.value)} style={{ padding: "10px 16px", background: "rgba(30,30,50,0.95)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", color: "#fff", fontSize: "14px", fontFamily: "inherit", outline: "none" }}>
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search by name or email..." style={{ flex: 1, minWidth: "200px", padding: "10px 16px", background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "10px", color: textPrimary, fontSize: "14px", fontFamily: "inherit", outline: "none" }} />
+              <select value={filterStrength} onChange={e => setFilterStrength(e.target.value)} style={{ padding: "10px 16px", background: darkMode ? "rgba(30,30,50,0.95)" : "#fff", border: `1px solid ${cardBorder}`, borderRadius: "10px", color: textPrimary, fontSize: "14px", fontFamily: "inherit", outline: "none" }}>
                 <option value="All">All Strengths</option>
                 {Object.keys(STRENGTH_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
               </select>
-              <select value={filterRec} onChange={e => setFilterRec(e.target.value)} style={{ padding: "10px 16px", background: "rgba(30,30,50,0.95)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px", color: "#fff", fontSize: "14px", fontFamily: "inherit", outline: "none" }}>
+              <select value={filterRec} onChange={e => setFilterRec(e.target.value)} style={{ padding: "10px 16px", background: darkMode ? "rgba(30,30,50,0.95)" : "#fff", border: `1px solid ${cardBorder}`, borderRadius: "10px", color: textPrimary, fontSize: "14px", fontFamily: "inherit", outline: "none" }}>
                 <option value="All">All Recommendations</option>
                 <option value="Strong Yes">Strong Yes</option>
                 <option value="Yes">Yes</option>
                 <option value="Maybe">Maybe</option>
               </select>
             </div>
-            {(page === "shortlisted" ? candidates.filter(c => c.shortlisted) : filtered).length === 0 ? (
-              <div style={{ textAlign: "center", padding: "4rem", color: "#444" }}>
-                <div style={{ fontSize: "48px", marginBottom: "1rem" }}>{page === "shortlisted" ? "⭐" : "🔍"}</div>
-                <div style={{ fontSize: "16px" }}>{page === "shortlisted" ? "No shortlisted candidates yet." : "No candidates match your filters."}</div>
-              </div>
-            ) : (page === "shortlisted" ? candidates.filter(c => c.shortlisted) : filtered).map(c => {
+            {(page === "shortlisted" ? candidates.filter(c => c.shortlisted) : filtered).map(c => {
               const colors = STRENGTH_COLORS[c.primary_strength] || STRENGTH_COLORS["Strategic Thinking"];
               const role = ROLES.find(r => r.id === c.role_id);
               const recColor = { "Strong Yes": "#00C9A7", "Yes": "#E8FF5A", "Maybe": "#FF6B35" }[c.hire_recommendation] || "#888";
+              const statusColor = { "Reviewing": "#888", "Interviewing": "#7B61FF", "Hired": "#00C9A7", "Rejected": "#ff6b6b" }[c.status || "Reviewing"] || "#888";
               return (
-                <div key={c.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "16px", padding: "1.5rem 2rem", marginBottom: "0.8rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", cursor: "pointer", transition: "all 0.15s" }}
+                <div key={c.id} style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.2rem 1.5rem", marginBottom: "0.8rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", cursor: "pointer", transition: "all 0.15s" }}
                   onClick={() => setSelected(c)}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(123,97,255,0.3)"; e.currentTarget.style.background = "rgba(123,97,255,0.05)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-                    <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: colors.bg, flexShrink: 0 }} />
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(123,97,255,0.3)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = cardBorder; }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <Avatar name={c.name} size={40} />
                     <div>
-                      <div style={{ fontSize: "16px", fontWeight: "700", marginBottom: "2px" }}>{c.name}</div>
-                      <div style={{ fontSize: "13px", color: "#555" }}>{c.clifton_theme || c.primary_strength} · {role?.title || c.role_id} · {c.email}</div>
+                      <div style={{ fontSize: "15px", fontWeight: "700", color: textPrimary, marginBottom: "2px" }}>{c.name}</div>
+                      <div style={{ fontSize: "12px", color: textMuted }}>{c.clifton_theme || c.primary_strength} · {role?.title || c.role_id} · {c.email}</div>
                     </div>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-                    <span style={{ padding: "4px 12px", borderRadius: "999px", background: `${recColor}18`, border: `1px solid ${recColor}44`, fontSize: "12px", color: recColor, fontWeight: "600" }}>{c.hire_recommendation}</span>
-                    <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: "20px", fontWeight: "800", color: colors.bg }}>{c.confidence}%</div>
-                      <div style={{ fontSize: "11px", color: "#555" }}>match</div>
-                    </div>
-                    <button onClick={e => { e.stopPropagation(); toggleShortlist(c.id, c.shortlisted); }} style={{ background: "transparent", border: "none", fontSize: "18px", cursor: "pointer", opacity: c.shortlisted ? 1 : 0.3, transition: "opacity 0.15s" }}>⭐</button>
+                  <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                    <span style={{ padding: "3px 10px", borderRadius: "999px", background: `${statusColor}18`, border: `1px solid ${statusColor}44`, fontSize: "11px", color: statusColor }}>{c.status || "Reviewing"}</span>
+                    <span style={{ padding: "3px 10px", borderRadius: "999px", background: `${recColor}18`, border: `1px solid ${recColor}44`, fontSize: "11px", color: recColor }}>{c.hire_recommendation}</span>
+                    <div style={{ fontSize: "18px", fontWeight: "800", color: colors.bg }}>{c.confidence}%</div>
+                    <button onClick={e => { e.stopPropagation(); toggleShortlist(c.id, c.shortlisted); }} style={{ background: "transparent", border: "none", fontSize: "16px", cursor: "pointer", opacity: c.shortlisted ? 1 : 0.3 }}>⭐</button>
                   </div>
                 </div>
               );
@@ -796,24 +860,146 @@ function HRDashboard({ token }) {
           </div>
         )}
 
-        {/* SETTINGS */}
+        {page === "evaluations" && (
+          <div>
+            <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: "0 0 0.3rem", color: textPrimary }}>📋 Evaluations</h1>
+            <p style={{ color: textSecondary, margin: "0 0 2rem", fontSize: "14px" }}>Side-by-side AI score comparison across all candidates.</p>
+            {candidates.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "4rem", color: textMuted }}>No candidates yet.</div>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                  <thead>
+                    <tr style={{ borderBottom: `1px solid ${cardBorder}` }}>
+                      {["Candidate", "Clifton Theme", "Role", "Depth", "Consistency", "Self-Aware", "Clarity", "Score", "Rec"].map(h => (
+                        <th key={h} style={{ padding: "12px 16px", textAlign: "left", color: textMuted, fontWeight: "600", letterSpacing: "1px", fontSize: "11px", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {candidates.map(c => {
+                      const colors = STRENGTH_COLORS[c.primary_strength] || STRENGTH_COLORS["Strategic Thinking"];
+                      const recColor = { "Strong Yes": "#00C9A7", "Yes": "#E8FF5A", "Maybe": "#FF6B35" }[c.hire_recommendation] || "#888";
+                      return (
+                        <tr key={c.id} onClick={() => setSelected(c)} style={{ borderBottom: `1px solid ${cardBorder}`, cursor: "pointer", transition: "background 0.15s" }}
+                          onMouseEnter={e => e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)"}
+                          onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                          <td style={{ padding: "14px 16px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                              <Avatar name={c.name} size={28} />
+                              <span style={{ fontWeight: "600", color: textPrimary }}>{c.name}</span>
+                            </div>
+                          </td>
+                          <td style={{ padding: "14px 16px" }}><span style={{ color: colors.bg, fontWeight: "600" }}>{c.clifton_theme || c.primary_strength}</span></td>
+                          <td style={{ padding: "14px 16px", color: textSecondary }}>{ROLES.find(r => r.id === c.role_id)?.title || c.role_id}</td>
+                          <td style={{ padding: "14px 16px" }}><span style={{ color: "#7B61FF", fontWeight: "700" }}>{c.rubric_depth || 0}</span></td>
+                          <td style={{ padding: "14px 16px" }}><span style={{ color: "#00C9A7", fontWeight: "700" }}>{c.rubric_consistency || 0}</span></td>
+                          <td style={{ padding: "14px 16px" }}><span style={{ color: "#E8FF5A", fontWeight: "700" }}>{c.rubric_self_awareness || 0}</span></td>
+                          <td style={{ padding: "14px 16px" }}><span style={{ color: "#FF6B35", fontWeight: "700" }}>{c.rubric_clarity || 0}</span></td>
+                          <td style={{ padding: "14px 16px" }}><span style={{ fontSize: "16px", fontWeight: "900", color: colors.bg }}>{c.confidence}%</span></td>
+                          <td style={{ padding: "14px 16px" }}><span style={{ padding: "3px 10px", borderRadius: "999px", background: `${recColor}18`, border: `1px solid ${recColor}44`, color: recColor, fontSize: "11px", fontWeight: "600" }}>{c.hire_recommendation}</span></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {page === "tasks" && (
+          <div style={{ maxWidth: "680px" }}>
+            <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: "0 0 0.3rem", color: textPrimary }}>✅ Tasks</h1>
+            <p style={{ color: textSecondary, margin: "0 0 2rem", fontSize: "14px" }}>{tasks.filter(t => !t.done).length} pending · {tasks.filter(t => t.done).length} completed</p>
+            <div style={{ display: "flex", gap: "0.8rem", marginBottom: "2rem" }}>
+              <input value={newTask} onChange={e => setNewTask(e.target.value)} onKeyDown={e => e.key === "Enter" && addTask()} placeholder="Add a new task... (e.g. Call Jordan about interview)" style={{ flex: 1, padding: "12px 16px", background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "10px", color: textPrimary, fontSize: "14px", fontFamily: "inherit", outline: "none" }} />
+              <button onClick={addTask} style={{ padding: "12px 20px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "10px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>Add</button>
+            </div>
+            {tasks.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "3rem", color: textMuted }}>
+                <div style={{ fontSize: "40px", marginBottom: "1rem" }}>📋</div>
+                <div>No tasks yet. Add one above!</div>
+              </div>
+            ) : tasks.map(t => (
+              <div key={t.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "1rem 1.2rem", background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "12px", marginBottom: "0.6rem" }}>
+                <button onClick={() => toggleTask(t.id, t.done)} style={{ width: "22px", height: "22px", borderRadius: "50%", border: `2px solid ${t.done ? "#00C9A7" : cardBorder}`, background: t.done ? "#00C9A7" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "#fff", fontSize: "12px" }}>
+                  {t.done ? "✓" : ""}
+                </button>
+                <span style={{ flex: 1, fontSize: "14px", color: t.done ? textMuted : textPrimary, textDecoration: t.done ? "line-through" : "none" }}>{t.title}</span>
+                <button onClick={() => deleteTask(t.id)} style={{ background: "transparent", border: "none", color: textMuted, cursor: "pointer", fontSize: "16px", padding: "4px" }}>×</button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {page === "recruitment" && (
+          <div style={{ maxWidth: "800px" }}>
+            <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: "0 0 0.3rem", color: textPrimary }}>💼 Recruitment</h1>
+            <p style={{ color: textSecondary, margin: "0 0 2rem", fontSize: "14px" }}>{jobs.filter(j => j.status === "Open").length} open roles · {jobs.filter(j => j.status === "Closed").length} closed</p>
+            <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "16px", padding: "1.5rem", marginBottom: "2rem" }}>
+              <div style={{ fontSize: "13px", fontWeight: "700", color: textSecondary, marginBottom: "1rem" }}>Post a New Role</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr auto", gap: "0.8rem", alignItems: "end" }}>
+                <input value={newJob.title} onChange={e => setNewJob(p => ({ ...p, title: e.target.value }))} placeholder="Job title" style={{ padding: "10px 14px", background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", border: `1px solid ${cardBorder}`, borderRadius: "8px", color: textPrimary, fontSize: "14px", fontFamily: "inherit", outline: "none" }} />
+                <input value={newJob.department} onChange={e => setNewJob(p => ({ ...p, department: e.target.value }))} placeholder="Department" style={{ padding: "10px 14px", background: darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)", border: `1px solid ${cardBorder}`, borderRadius: "8px", color: textPrimary, fontSize: "14px", fontFamily: "inherit", outline: "none" }} />
+                <select value={newJob.type} onChange={e => setNewJob(p => ({ ...p, type: e.target.value }))} style={{ padding: "10px 14px", background: darkMode ? "rgba(30,30,50,0.95)" : "#fff", border: `1px solid ${cardBorder}`, borderRadius: "8px", color: textPrimary, fontSize: "14px", fontFamily: "inherit", outline: "none" }}>
+                  <option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option>
+                </select>
+                <button onClick={addJob} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "8px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>Post</button>
+              </div>
+            </div>
+            {jobs.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "3rem", color: textMuted }}>
+                <div style={{ fontSize: "40px", marginBottom: "1rem" }}>💼</div>
+                <div>No roles posted yet.</div>
+              </div>
+            ) : jobs.map(j => (
+              <div key={j.id} style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "14px", padding: "1.2rem 1.5rem", marginBottom: "0.8rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
+                <div>
+                  <div style={{ fontSize: "15px", fontWeight: "700", color: textPrimary, marginBottom: "3px" }}>{j.title}</div>
+                  <div style={{ fontSize: "12px", color: textMuted }}>{j.department} · {j.type}</div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.8rem" }}>
+                  <span style={{ padding: "4px 12px", borderRadius: "999px", background: j.status === "Open" ? "rgba(0,201,167,0.15)" : "rgba(255,255,255,0.05)", border: `1px solid ${j.status === "Open" ? "rgba(0,201,167,0.3)" : cardBorder}`, fontSize: "12px", color: j.status === "Open" ? "#00C9A7" : textMuted, fontWeight: "600" }}>{j.status}</span>
+                  <button onClick={() => toggleJobStatus(j.id, j.status)} style={{ padding: "6px 14px", background: "transparent", border: `1px solid ${cardBorder}`, borderRadius: "8px", color: textSecondary, cursor: "pointer", fontFamily: "inherit", fontSize: "12px" }}>
+                    {j.status === "Open" ? "Close" : "Reopen"}
+                  </button>
+                  <button onClick={() => deleteJob(j.id)} style={{ background: "transparent", border: "none", color: textMuted, cursor: "pointer", fontSize: "16px" }}>×</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {page === "settings" && (
           <div style={{ maxWidth: "600px" }}>
-            <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: "0 0 0.3rem" }}>Settings</h1>
-            <p style={{ color: "#555", margin: "0 0 2.5rem", fontSize: "14px" }}>System information and configuration.</p>
-            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px", padding: "2rem", marginBottom: "1rem" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>About HoneypotAdvisory</div>
-              <p style={{ color: "#888", fontSize: "14px", lineHeight: 1.7, margin: "0 0 1rem" }}>HoneypotAdvisory is an AI-powered talent intelligence platform that uses Clifton StrengthsFinder methodology and rubric-based behavioral analysis to help organizations make smarter, fairer hiring decisions.</p>
-              <p style={{ color: "#555", fontSize: "13px", margin: 0 }}>Contact: info@honeypotadvisory.com</p>
+            <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: "0 0 0.3rem", color: textPrimary }}>Settings</h1>
+            <p style={{ color: textSecondary, margin: "0 0 2.5rem", fontSize: "14px" }}>System configuration and preferences.</p>
+            <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem", marginBottom: "1rem" }}>
+              <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "1.5rem" }}>Appearance</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontSize: "15px", fontWeight: "600", color: textPrimary, marginBottom: "3px" }}>Dark Mode</div>
+                  <div style={{ fontSize: "13px", color: textSecondary }}>Toggle between dark and light theme</div>
+                </div>
+                <button onClick={() => setDarkMode(d => !d)} style={{ width: "52px", height: "28px", borderRadius: "14px", background: darkMode ? "#7B61FF" : "rgba(0,0,0,0.15)", border: "none", cursor: "pointer", position: "relative", transition: "background 0.3s" }}>
+                  <div style={{ position: "absolute", top: "3px", left: darkMode ? "27px" : "3px", width: "22px", height: "22px", borderRadius: "50%", background: "#fff", transition: "left 0.3s" }} />
+                </button>
+              </div>
             </div>
-            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "20px", padding: "2rem" }}>
-              <div style={{ fontSize: "11px", letterSpacing: "3px", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>System Status</div>
-              {[["AI Engine", "Groq LLaMA 3.3 70B", "#00C9A7"], ["Database", "Supabase PostgreSQL", "#00C9A7"], ["Backend", "Render (Node.js)", "#00C9A7"], ["Frontend", "Vercel (React)", "#00C9A7"]].map(([k, v, c]) => (
-                <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.8rem 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                  <span style={{ fontSize: "14px", color: "#888" }}>{k}</span>
+            <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem", marginBottom: "1rem" }}>
+              <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "1.5rem" }}>About</div>
+              <p style={{ color: textSecondary, fontSize: "14px", lineHeight: 1.7, margin: "0 0 1rem" }}>HoneypotAdvisory is an AI-powered talent intelligence platform using Clifton StrengthsFinder methodology and rubric-based behavioral analysis.</p>
+              <p style={{ color: textMuted, fontSize: "13px", margin: 0 }}>Contact: info@honeypotadvisory.com</p>
+            </div>
+            <div style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: "20px", padding: "2rem" }}>
+              <div style={{ fontSize: "11px", letterSpacing: "3px", color: textMuted, textTransform: "uppercase", marginBottom: "1.5rem" }}>System Status</div>
+              {[["AI Engine", "Groq LLaMA 3.3 70B"], ["Database", "Supabase PostgreSQL"], ["Backend", "Render (Node.js)"], ["Frontend", "Vercel (React)"]].map(([k, v]) => (
+                <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.8rem 0", borderBottom: `1px solid ${cardBorder}` }}>
+                  <span style={{ fontSize: "14px", color: textSecondary }}>{k}</span>
                   <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: c }} />
-                    <span style={{ fontSize: "13px", color: "#666" }}>{v}</span>
+                    <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#00C9A7" }} />
+                    <span style={{ fontSize: "13px", color: textMuted }}>{v}</span>
                   </div>
                 </div>
               ))}
@@ -821,7 +1007,7 @@ function HRDashboard({ token }) {
           </div>
         )}
       </div>
-      {toast && <div style={{ position: "fixed", bottom: "2rem", right: "2rem", padding: "12px 20px", background: "rgba(30,30,50,0.95)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "12px", color: "#fff", fontSize: "14px", backdropFilter: "blur(20px)", zIndex: 999 }}>{toast}</div>}
+      {toast && <div style={{ position: "fixed", bottom: "2rem", right: "2rem", padding: "12px 20px", background: darkMode ? "rgba(30,30,50,0.95)" : "rgba(255,255,255,0.95)", border: `1px solid ${cardBorder}`, borderRadius: "12px", color: textPrimary, fontSize: "14px", backdropFilter: "blur(20px)", zIndex: 999 }}>{toast}</div>}
     </div>
   );
 }
