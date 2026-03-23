@@ -405,10 +405,12 @@ function HRDashboard({ token }) {
   const [toast, setToast] = useState(null);
   const [assigningTask, setAssigningTask] = useState(null);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
   const [newEmployee, setNewEmployee] = useState({ name: "", email: "", role: "", department: "", skills: "" });
+  const [newTask, setNewTask] = useState({ title: "", description: "", required_skills: "" });
 
   const headers = { "x-hr-token": token };
-  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3500); };
 
   useEffect(() => {
     Promise.all([
@@ -466,14 +468,44 @@ function HRDashboard({ token }) {
     showToast("🗑️ Employee removed");
   };
 
+  const addTask = async () => {
+    if (!newTask.title.trim()) return showToast("❌ Please enter a task title.");
+    if (!newTask.required_skills.trim()) return showToast("❌ Please enter required skills.");
+    try {
+      const res = await fetch(`${BACKEND_URL}/hr/tasks`, {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+        body: JSON.stringify(newTask),
+      });
+      const data = await res.json();
+      if (data.id) {
+        setTasks(prev => [data, ...prev]);
+        setNewTask({ title: "", description: "", required_skills: "" });
+        setShowAddTask(false);
+        showToast("📋 Task created successfully!");
+      } else {
+        showToast("❌ Failed to create task — " + (data.error || "check Render logs"));
+      }
+    } catch {
+      showToast("❌ Could not reach server.");
+    }
+  };
+
   const assignTask = async (taskId) => {
     setAssigningTask(taskId);
+    showToast("🤖 AI is analyzing employee skills...");
     try {
-      const res = await fetch(`${BACKEND_URL}/hr/tasks/${taskId}/assign`, { method: "POST", headers: { ...headers, "Content-Type": "application/json" } });
+      const res = await fetch(`${BACKEND_URL}/hr/tasks/${taskId}/assign`, {
+        method: "POST",
+        headers: { ...headers, "Content-Type": "application/json" },
+      });
       const data = await res.json();
       if (data.success) {
-        setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: "Assigned", assigned_name: data.assignedName, ai_reasoning: data.reasoning } : t));
-        showToast(`🤖 Assigned to ${data.assignedName}!`);
+        setTasks(prev => prev.map(t => t.id === taskId
+          ? { ...t, status: "Assigned", assigned_name: data.assignedName, ai_reasoning: data.reasoning }
+          : t
+        ));
+        showToast(`✅ Assigned to ${data.assignedName}!`);
       } else {
         showToast("❌ Assignment failed — " + (data.error || "Try again."));
       }
@@ -481,6 +513,19 @@ function HRDashboard({ token }) {
       showToast("❌ Could not reach server.");
     }
     setAssigningTask(null);
+  };
+
+  const reassignTask = async (taskId) => {
+    setTasks(prev => prev.map(t => t.id === taskId
+      ? { ...t, status: "Unassigned", assigned_name: null, ai_reasoning: null, assigned_to: null }
+      : t
+    ));
+    await fetch(`${BACKEND_URL}/hr/tasks/${taskId}`, {
+      method: "PATCH",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "Unassigned", assigned_to: null, assigned_name: null, ai_reasoning: null }),
+    }).catch(() => {});
+    showToast("🔄 Task unassigned — ready to reassign");
   };
 
   const deleteTask = async (id) => {
@@ -507,6 +552,7 @@ function HRDashboard({ token }) {
 
   const cardBg = "rgba(255,255,255,0.03)";
   const cardBorder = "rgba(255,255,255,0.07)";
+  const inp = { width: "100%", padding: "12px 16px", background: "rgba(255,255,255,0.05)", border: `1px solid ${cardBorder}`, borderRadius: "10px", color: "#fff", fontSize: "14px", fontFamily: "inherit", outline: "none", boxSizing: "border-box" };
 
   const Sidebar = () => (
     <div style={{ width: "240px", flexShrink: 0, background: "rgba(255,255,255,0.02)", borderRight: `1px solid ${cardBorder}`, padding: "2rem 1rem", display: "flex", flexDirection: "column", gap: "4px" }}>
@@ -817,12 +863,10 @@ function HRDashboard({ token }) {
                 <div style={{ fontSize: "13px", fontWeight: "700", color: "#888", marginBottom: "1.5rem" }}>New Employee</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
                   {[{ key: "name", placeholder: "Full name" }, { key: "email", placeholder: "Email address" }, { key: "role", placeholder: "Job title / Role" }, { key: "department", placeholder: "Department" }].map(f => (
-                    <input key={f.key} value={newEmployee[f.key]} onChange={e => setNewEmployee(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.placeholder}
-                      style={{ padding: "12px 16px", background: "rgba(255,255,255,0.05)", border: `1px solid ${cardBorder}`, borderRadius: "10px", color: "#fff", fontSize: "14px", fontFamily: "inherit", outline: "none" }} />
+                    <input key={f.key} value={newEmployee[f.key]} onChange={e => setNewEmployee(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.placeholder} style={inp} />
                   ))}
                 </div>
-                <input value={newEmployee.skills} onChange={e => setNewEmployee(p => ({ ...p, skills: e.target.value }))} placeholder="Skills (comma separated — e.g. Python, React, SQL)"
-                  style={{ width: "100%", padding: "12px 16px", background: "rgba(255,255,255,0.05)", border: `1px solid ${cardBorder}`, borderRadius: "10px", color: "#fff", fontSize: "14px", fontFamily: "inherit", outline: "none", boxSizing: "border-box", marginBottom: "1rem" }} />
+                <input value={newEmployee.skills} onChange={e => setNewEmployee(p => ({ ...p, skills: e.target.value }))} placeholder="Skills (comma separated — e.g. Python, React, SQL)" style={{ ...inp, marginBottom: "1rem" }} />
                 <div style={{ display: "flex", gap: "0.8rem" }}>
                   <button onClick={addEmployee} style={{ padding: "10px 24px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "10px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>Add Employee</button>
                   <button onClick={() => setShowAddEmployee(false)} style={{ padding: "10px 24px", background: "transparent", border: `1px solid ${cardBorder}`, borderRadius: "10px", color: "#888", fontSize: "14px", cursor: "pointer", fontFamily: "inherit" }}>Cancel</button>
@@ -864,42 +908,133 @@ function HRDashboard({ token }) {
 
         {page === "tasks" && (
           <div>
-            <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: "0 0 0.3rem" }}>AI Task Assignment</h1>
-            <p style={{ color: "#555", margin: "0 0 2rem", fontSize: "14px" }}>{tasks.filter(t => t.status === "Unassigned").length} unassigned · {tasks.filter(t => t.status === "Assigned").length} assigned</p>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.3rem" }}>
+              <h1 style={{ fontSize: "1.8rem", fontWeight: "900", margin: 0 }}>AI Task Assignment</h1>
+              <button onClick={() => setShowAddTask(!showAddTask)} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "10px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>
+                {showAddTask ? "✕ Cancel" : "+ New Task"}
+              </button>
+            </div>
+            <p style={{ color: "#555", margin: "0 0 2rem", fontSize: "14px" }}>
+              {tasks.filter(t => t.status === "Unassigned").length} unassigned · {tasks.filter(t => t.status === "Assigned").length} assigned
+            </p>
+
+            {showAddTask && (
+              <div style={{ background: cardBg, border: `1px solid rgba(123,97,255,0.3)`, borderRadius: "20px", padding: "2rem", marginBottom: "2rem" }}>
+                <div style={{ fontSize: "14px", fontWeight: "700", color: "#a78bfa", marginBottom: "1.5rem" }}>📋 Create New Task</div>
+                <input
+                  value={newTask.title}
+                  onChange={e => setNewTask(p => ({ ...p, title: e.target.value }))}
+                  placeholder="Task title — e.g. Build REST API for mobile app"
+                  style={{ ...inp, marginBottom: "1rem" }}
+                />
+                <textarea
+                  value={newTask.description}
+                  onChange={e => setNewTask(p => ({ ...p, description: e.target.value }))}
+                  placeholder="Describe what needs to be done..."
+                  rows={3}
+                  style={{ ...inp, marginBottom: "1rem", resize: "vertical", lineHeight: 1.6 }}
+                />
+                <input
+                  value={newTask.required_skills}
+                  onChange={e => setNewTask(p => ({ ...p, required_skills: e.target.value }))}
+                  placeholder="Required skills — comma separated e.g. Python, SQL, React"
+                  style={{ ...inp, marginBottom: "0.6rem" }}
+                />
+                <p style={{ fontSize: "11px", color: "#555", marginBottom: "1.2rem" }}>
+                  💡 Skills must match what employees have — e.g. Python, Node.js, Figma, SQL
+                </p>
+                <div style={{ display: "flex", gap: "0.8rem" }}>
+                  <button onClick={addTask} style={{ padding: "11px 28px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "10px", color: "#fff", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit" }}>
+                    Create Task
+                  </button>
+                  <button onClick={() => { setShowAddTask(false); setNewTask({ title: "", description: "", required_skills: "" }); }} style={{ padding: "11px 28px", background: "transparent", border: `1px solid ${cardBorder}`, borderRadius: "10px", color: "#888", fontSize: "14px", cursor: "pointer", fontFamily: "inherit" }}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
             {tasks.length === 0 ? (
               <div style={{ textAlign: "center", padding: "4rem", color: "#444" }}>
                 <div style={{ fontSize: "48px", marginBottom: "1rem" }}>📋</div>
-                <div style={{ fontSize: "16px", marginBottom: "0.5rem" }}>No tasks available.</div>
-                <div style={{ fontSize: "14px" }}>Tasks will appear here and AI will assign the best employee.</div>
+                <div style={{ fontSize: "16px", marginBottom: "0.5rem", color: "#666" }}>No tasks yet.</div>
+                <div style={{ fontSize: "14px" }}>Create a task above — AI will match it to the best employee by skill.</div>
               </div>
             ) : tasks.map(t => (
-              <div key={t.id} style={{ background: cardBg, border: `1px solid ${t.status === "Assigned" ? "rgba(0,201,167,0.25)" : cardBorder}`, borderRadius: "16px", padding: "1.5rem", marginBottom: "0.8rem" }}>
+              <div key={t.id} style={{ background: cardBg, border: `1px solid ${t.status === "Assigned" ? "rgba(0,201,167,0.3)" : cardBorder}`, borderRadius: "16px", padding: "1.5rem", marginBottom: "0.8rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem" }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", marginBottom: "0.4rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.8rem", marginBottom: "0.5rem", flexWrap: "wrap" }}>
                       <div style={{ fontSize: "16px", fontWeight: "700" }}>{t.title}</div>
-                      <span style={{ padding: "3px 10px", borderRadius: "999px", background: t.status === "Assigned" ? "rgba(0,201,167,0.15)" : "rgba(255,107,53,0.15)", border: `1px solid ${t.status === "Assigned" ? "rgba(0,201,167,0.3)" : "rgba(255,107,53,0.3)"}`, fontSize: "11px", color: t.status === "Assigned" ? "#00C9A7" : "#FF6B35", fontWeight: "600" }}>{t.status}</span>
+                      <span style={{
+                        padding: "3px 10px", borderRadius: "999px", fontSize: "11px", fontWeight: "600",
+                        background: t.status === "Assigned" ? "rgba(0,201,167,0.15)" : "rgba(255,107,53,0.15)",
+                        border: `1px solid ${t.status === "Assigned" ? "rgba(0,201,167,0.3)" : "rgba(255,107,53,0.3)"}`,
+                        color: t.status === "Assigned" ? "#00C9A7" : "#FF6B35",
+                      }}>{t.status}</span>
+                      {t.priority && (
+                        <span style={{ padding: "3px 10px", borderRadius: "999px", fontSize: "11px", background: "rgba(123,97,255,0.1)", border: "1px solid rgba(123,97,255,0.25)", color: "#a78bfa" }}>{t.priority}</span>
+                      )}
+                      {t.category && (
+                        <span style={{ padding: "3px 10px", borderRadius: "999px", fontSize: "11px", background: "rgba(255,255,255,0.04)", border: `1px solid ${cardBorder}`, color: "#555" }}>{t.category}</span>
+                      )}
                     </div>
-                    <div style={{ fontSize: "13px", color: "#666", lineHeight: 1.5, marginBottom: "0.8rem" }}>{t.description}</div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginBottom: "0.8rem" }}>
-                      {(Array.isArray(t.required_skills) ? t.required_skills : []).map(skill => (
-                        <span key={skill} style={{ padding: "2px 8px", background: "rgba(232,255,90,0.08)", border: "1px solid rgba(232,255,90,0.2)", borderRadius: "999px", fontSize: "11px", color: "#E8FF5A" }}>{skill}</span>
-                      ))}
-                    </div>
-                    {t.assigned_name && (
-                      <div style={{ padding: "0.8rem 1rem", background: "rgba(0,201,167,0.06)", border: "1px solid rgba(0,201,167,0.15)", borderRadius: "10px" }}>
-                        <div style={{ fontSize: "12px", color: "#00C9A7", fontWeight: "700", marginBottom: "0.3rem" }}>🤖 AI Assigned to: {t.assigned_name}</div>
-                        <div style={{ fontSize: "12px", color: "#666", lineHeight: 1.5 }}>{t.ai_reasoning}</div>
+
+                    {t.description && (
+                      <div style={{ fontSize: "13px", color: "#666", lineHeight: 1.5, marginBottom: "0.8rem" }}>{t.description}</div>
+                    )}
+
+                    {Array.isArray(t.required_skills) && t.required_skills.length > 0 && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginBottom: "0.8rem", alignItems: "center" }}>
+                        <span style={{ fontSize: "11px", color: "#444", marginRight: "4px" }}>Skills:</span>
+                        {t.required_skills.map(skill => (
+                          <span key={skill} style={{ padding: "2px 8px", background: "rgba(232,255,90,0.08)", border: "1px solid rgba(232,255,90,0.2)", borderRadius: "999px", fontSize: "11px", color: "#E8FF5A" }}>{skill}</span>
+                        ))}
+                      </div>
+                    )}
+
+                    {t.status === "Assigned" && t.assigned_name && (
+                      <div style={{ padding: "0.8rem 1rem", background: "rgba(0,201,167,0.06)", border: "1px solid rgba(0,201,167,0.2)", borderRadius: "10px", marginTop: "0.5rem" }}>
+                        <div style={{ fontSize: "13px", color: "#00C9A7", fontWeight: "700", marginBottom: "0.4rem" }}>
+                          🤖 AI Assigned to: <span style={{ fontSize: "15px" }}>{t.assigned_name}</span>
+                        </div>
+                        {t.ai_reasoning && (
+                          <div style={{ fontSize: "12px", color: "#888", lineHeight: 1.6 }}>{t.ai_reasoning}</div>
+                        )}
                       </div>
                     )}
                   </div>
+
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", flexShrink: 0 }}>
                     {t.status === "Unassigned" && (
-                      <button onClick={() => assignTask(t.id)} disabled={assigningTask === t.id} style={{ padding: "8px 16px", background: "linear-gradient(135deg, #7B61FF, #5a45cc)", border: "none", borderRadius: "8px", color: "#fff", fontSize: "13px", fontWeight: "700", cursor: "pointer", fontFamily: "inherit", opacity: assigningTask === t.id ? 0.7 : 1, whiteSpace: "nowrap" }}>
-                        {assigningTask === t.id ? "🤖 Assigning..." : "🤖 AI Assign"}
+                      <button
+                        onClick={() => assignTask(t.id)}
+                        disabled={assigningTask === t.id}
+                        style={{
+                          padding: "9px 18px",
+                          background: assigningTask === t.id ? "rgba(123,97,255,0.3)" : "linear-gradient(135deg, #7B61FF, #5a45cc)",
+                          border: "none", borderRadius: "8px", color: "#fff", fontSize: "13px", fontWeight: "700",
+                          cursor: assigningTask === t.id ? "not-allowed" : "pointer",
+                          fontFamily: "inherit", whiteSpace: "nowrap",
+                        }}
+                      >
+                        {assigningTask === t.id ? "⏳ Assigning..." : "🤖 AI Assign"}
                       </button>
                     )}
-                    <button onClick={() => deleteTask(t.id)} style={{ padding: "8px 16px", background: "transparent", border: `1px solid ${cardBorder}`, borderRadius: "8px", color: "#555", fontSize: "13px", cursor: "pointer", fontFamily: "inherit" }}>Delete</button>
+                    {t.status === "Assigned" && (
+                      <button
+                        onClick={() => reassignTask(t.id)}
+                        style={{ padding: "9px 18px", background: "rgba(0,201,167,0.08)", border: "1px solid rgba(0,201,167,0.25)", borderRadius: "8px", color: "#00C9A7", fontSize: "13px", cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}
+                      >
+                        🔄 Reassign
+                      </button>
+                    )}
+                    <button
+                      onClick={() => deleteTask(t.id)}
+                      style={{ padding: "9px 18px", background: "transparent", border: `1px solid ${cardBorder}`, borderRadius: "8px", color: "#555", fontSize: "13px", cursor: "pointer", fontFamily: "inherit" }}
+                    >
+                      🗑️ Delete
+                    </button>
                   </div>
                 </div>
               </div>
